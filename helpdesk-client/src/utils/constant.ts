@@ -15,6 +15,9 @@ export const Routes = {
   ADMIN_USER_LIST: "/Manage/Users",
   ADMIN_USER_CREATE: "/Manage/Create/Users",
   ADMIN_USER_EDIT: "/Manage/Edit/Users/:id",
+  ADMIN_CATEGORY_LIST: "/Manage/Category",
+  ADMIN_CATEGORY_CREATE: "/Manage/Category/Create",
+  ADMIN_CATEGORY_EDIT: "/Manage/Category/Edit/:id",
 } as const;
 
 export const Roles = {

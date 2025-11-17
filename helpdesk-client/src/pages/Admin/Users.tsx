@@ -160,7 +160,7 @@ const Users = () => {
                 Manage Users
               </Typography>
               <Typography variant="body1" color="#6c757d">
-                Manage system users and roles
+                Manage system users and their roles
               </Typography>
             </Box>
           </Box>

@@ -199,12 +199,16 @@ const AdminDashboard = () => {
               <ActionCard>
                 <Assessment sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }} />
                 <Typography variant="h6" fontWeight={600}>
-                  Reports
+                  Categories
                 </Typography>
                 <Typography variant="body2" color="#6c757d" mb={2}>
-                  View detailed analytics
+                  View All Categories
                 </Typography>
-                <CustomButton variant="outlined" fullWidth size="small">
+                <CustomButton
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  onClick={() => navigate(Routes.ADMIN_CATEGORY_LIST)}>
                   View
                 </CustomButton>
               </ActionCard>

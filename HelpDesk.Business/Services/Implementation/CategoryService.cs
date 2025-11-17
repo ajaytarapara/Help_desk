@@ -40,7 +40,7 @@ namespace HelpDesk.Business.Services.Implementation
         public async Task UpdateAsync(int categoryId, CreateCategoryRequest request)
         {
             Category category = await GetCategoryById(categoryId);
-            await IsCategoryNameExist(request.CategoryName);
+            await IsCategoryNameExist(request.CategoryName, categoryId);
             category.UpdatedDate = DateTime.UtcNow;
             _mapper.Map(request, category);
             await _unitOfWork.SaveAsync();
@@ -76,15 +76,22 @@ namespace HelpDesk.Business.Services.Implementation
             await _unitOfWork.SaveAsync();
         }
 
-        private async Task<Category> IsCategoryNameExist(string categoryName)
+        private async Task<Category?> IsCategoryNameExist(string categoryName, int? currentCategoryId = null)
         {
-            Category? category = await _unitOfWork.Categories.GetFirstOrDefault(c => c.CategoryName.ToLower() == categoryName.ToLower() && !c.IsDelete);
+            Category? category = await _unitOfWork.Categories.GetFirstOrDefault(c =>
+                c.CategoryName.ToLower() == categoryName.ToLower() &&
+                !c.IsDelete &&
+                (!currentCategoryId.HasValue || c.CategoryId != currentCategoryId.Value)
+            );
+
             if (category != null)
             {
                 throw new BadRequestException(Message.Error.CategoryAlreadyExist);
             }
+
             return category;
         }
+
 
         private async Task<Category> GetCategoryById(int categoryId)
         {

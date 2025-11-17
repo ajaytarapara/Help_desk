@@ -79,3 +79,9 @@ export const UserSchema = Yup.object().shape({
 
   roleId: Yup.number().required("Role is required"),
 });
+
+export const CategorySchema = Yup.object().shape({
+  categoryName: Yup.string()
+    .max(100, "Category Name must be at most 100 characters")
+    .required("Category Name is required"),
+});

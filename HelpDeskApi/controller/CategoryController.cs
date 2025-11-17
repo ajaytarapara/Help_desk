@@ -23,11 +23,11 @@ namespace HelpDeskApi.controller
         public async Task<IActionResult> Create(CreateCategoryRequest request)
         {
             await _categoryService.CreateAsync(request);
-            return Success(Message.Success.CreatedSuccess("Category"));
+            return Success("", Message.Success.CreatedSuccess("Category"));
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("categoryId")]
+        [HttpGet("{categoryId}")]
         public async Task<IActionResult> GetById(int categoryId)
         {
             CategoryResponse category = await _categoryService.GetByIdAsync(categoryId);
@@ -35,11 +35,11 @@ namespace HelpDeskApi.controller
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("categoryId")]
+        [HttpPut("{categoryId}")]
         public async Task<IActionResult> Update(int categoryId, CreateCategoryRequest request)
         {
             await _categoryService.UpdateAsync(categoryId, request);
-            return Success(Message.Success.UpdateSuccess("Category"));
+            return Success("", Message.Success.UpdateSuccess("Category"));
         }
 
         [Authorize(Roles = "Admin")]
@@ -51,11 +51,11 @@ namespace HelpDeskApi.controller
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("categoryId")]
+        [HttpDelete("{categoryId}")]
         public async Task<IActionResult> Delete(int categoryId)
         {
             await _categoryService.DeleteAsync(categoryId);
-            return Success(Message.Success.DeleteSuccess("Category"));
+            return Success("", Message.Success.DeleteSuccess("Category"));
         }
     }
 }

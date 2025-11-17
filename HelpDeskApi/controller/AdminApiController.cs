@@ -52,7 +52,7 @@ namespace HelpDeskApi.controller
         public async Task<IActionResult> UpdateUser(int id, CreateUserRequest request)
         {
             bool updated = await _userService.UpdateUser(id, request);
-            return Success(Message.Success.UpdateSuccess("User"));
+            return Success(updated, Message.Success.UpdateSuccess("User"));
         }
 
     }

@@ -1,5 +1,7 @@
 import { lazy } from "react";
 import { Roles, Routes } from "../../../utils/constant";
+import Category from "../../../pages/Admin/Category";
+import CreateCategory from "../../../pages/Admin/CreateCategory";
 // --- Lazy Imports (Code Splitting) ---
 const AdminDashboard = lazy(() => import("../../../pages/Admin/Dashboard"));
 const AgentDashboard = lazy(() => import("../../../pages/Agent/Dashboard"));
@@ -85,6 +87,26 @@ export const protectedRoutes = [
   {
     path: Routes.ADMIN_USER_EDIT,
     element: <CreateUser />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_USER_EDIT,
+    element: <CreateUser />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_CATEGORY_LIST,
+    element: <Category />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_CATEGORY_CREATE,
+    element: <CreateCategory />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_CATEGORY_EDIT,
+    element: <CreateCategory />,
     roles: [Roles.ADMIN],
   },
 ];

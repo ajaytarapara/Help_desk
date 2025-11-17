@@ -9,5 +9,6 @@ namespace HelpDesk.Data.Repositories.Interfaces
         IPriorityRepository Priorities { get; }
         IStatusRepository Status { get; }
         ICommentRepository Comment { get; }
+        IRoleRepository Roles { get; }
     }
 }

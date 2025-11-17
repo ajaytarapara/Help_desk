@@ -65,6 +65,10 @@ namespace HelpDesk.Business.Mapping
 
             CreateMap<CreateUserRequest, User>()
             .ForMember(dest => dest.Password, opt => opt.MapFrom(src => "HelpDesk@123"));
+
+            CreateMap<UserRole, SelectListItemResponse>()
+            .ForMember(dest => dest.Label, opt => opt.MapFrom(src => src.RoleName))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RoleId));
         }
     }
 }

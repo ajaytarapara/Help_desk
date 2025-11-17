@@ -69,3 +69,15 @@ export const getUserTicketSummary = async (): Promise<
   );
   return response.data;
 };
+
+export const getAllRoles = async (): Promise<ApiResponse<SelectListItem[]>> => {
+  const response = await axiosClient.get<ApiResponse<SelectListItem[]>>(
+    "/lookup/get-all-roles",
+    {
+      headers: {
+        showToast: false,
+      },
+    }
+  );
+  return response.data;
+};

@@ -53,5 +53,12 @@ namespace HelpDeskApi.controller
             return Success(summaryResponse);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("get-all-roles")]
+        public async Task<IActionResult> GetUserRoles()
+        {
+            IEnumerable<SelectListItemResponse> summaryResponse = await _lookupService.GetAllRoleAsync();
+            return Success(summaryResponse);
+        }
     }
 }

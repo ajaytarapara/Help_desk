@@ -4,6 +4,7 @@ import {
   getAllAgentThunk,
   getAllCategoryThunk,
   getAllPriorityThunk,
+  getAllRolesThunk,
   getAllStatusThunk,
 } from "./dropDownThunk";
 
@@ -12,6 +13,7 @@ interface LookupState {
   priorityList: SelectListItem[];
   categoryList: SelectListItem[];
   agentList: SelectListItem[];
+  roleList: SelectListItem[];
 }
 
 const initialState: LookupState = {
@@ -19,6 +21,7 @@ const initialState: LookupState = {
   priorityList: [],
   categoryList: [],
   agentList: [],
+  roleList: [],
 };
 
 const lookUpSlice = createSlice({
@@ -30,6 +33,7 @@ const lookUpSlice = createSlice({
       state.categoryList = [];
       state.agentList = [];
       state.priorityList = [];
+      state.roleList = [];
     },
   },
   extraReducers: (builder) => {
@@ -50,6 +54,11 @@ const lookUpSlice = createSlice({
         }
       })
       .addCase(getAllAgentThunk.fulfilled, (state, action) => {
+        if (action.payload?.data) {
+          state.agentList = action.payload.data;
+        }
+      })
+      .addCase(getAllRolesThunk.fulfilled, (state, action) => {
         if (action.payload?.data) {
           state.agentList = action.payload.data;
         }

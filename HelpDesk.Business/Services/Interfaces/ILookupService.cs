@@ -9,5 +9,6 @@ namespace HelpDesk.Business.Services.Interfaces
         Task<IEnumerable<SelectListItemResponse>> GetAllPriorityAsync();
         Task<IEnumerable<SelectListItemResponse>> GetAllAgentAsync();
         Task<UserTicketSummary> GetTicketCountByStatus();
+        Task<IEnumerable<SelectListItemResponse>> GetAllRoleAsync();
     }
 }

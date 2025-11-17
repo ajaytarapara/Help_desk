@@ -5,6 +5,7 @@ import {
   getAllAgent,
   getAllCategory,
   getAllPriority,
+  getAllRoles,
   getAllStatus,
   getUserTicketSummary,
 } from "./dropDownService";
@@ -44,3 +45,11 @@ export const getTicketUserSummaryThunk = createAsyncThunk<
   const response = await getUserTicketSummary();
   return response;
 });
+
+export const getAllRolesThunk = createAsyncThunk<ApiResponse<SelectListItem[]>>(
+  "lookup/get-all-roles",
+  async () => {
+    const response = await getAllRoles();
+    return response;
+  }
+);

@@ -58,6 +58,13 @@ namespace HelpDesk.Business.Services.Implementation
             };
             return ticketSummaryResponse;
         }
+
+        public async Task<IEnumerable<SelectListItemResponse>> GetAllRoleAsync()
+        {
+            IEnumerable<UserRole> roles = await _unitOfWork.Roles.GetAllAsync(a => !a.IsDelete);
+            return _mapper.Map<IEnumerable<SelectListItemResponse>>(roles);
+        }
+
         private async Task<int> GetTicketCountByStatusName(string statusName)
         {
             IEnumerable<Ticket> tickets = await _unitOfWork.Tickets.GetAllAsync(t => t.Status.StatusName.ToLower() == statusName.ToLower() && !t.IsDeleted && t.CreatedById == _currentUserService.GetCurrentUserId());

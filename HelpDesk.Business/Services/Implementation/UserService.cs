@@ -35,11 +35,17 @@ namespace HelpDesk.Business.Services.Implementation
             string searchKey = request.Search?.Trim().ToLower();
 
             Expression<Func<User, bool>> filter = x =>
-                !x.IsDelete &&
+
                 (string.IsNullOrEmpty(searchKey)
                     || x.FullName.ToLower().Contains(searchKey)
                     || x.Email.ToLower().Contains(searchKey)) &&
              (!request.IsActive.HasValue || x.IsActive == request.IsActive.Value);
+
+            if (string.IsNullOrWhiteSpace(request.OrderBy) || request.OrderBy == "UserId")
+            {
+                request.OrderBy = "UserId";
+                request.IsDescending = true;
+            }
 
             var pagedData = await _unitOfWork.Users.GetPagedData(request, filter, x => x.Role);
 
@@ -68,7 +74,7 @@ namespace HelpDesk.Business.Services.Implementation
                 throw new BadRequestException(Message.Error.NotFound("Role"));
             User user = _mapper.Map<User>(request);
             user.Password = PasswordHelper.HashPassword(user.Password);
-
+            user.IsActive = request.IsActive;
             await _unitOfWork.Users.AddAsync(user);
             await _unitOfWork.SaveAsync();
 
@@ -99,10 +105,11 @@ namespace HelpDesk.Business.Services.Implementation
         public async Task<bool> UpdateUser(int userId, CreateUserRequest request)
         {
             User? user = await _unitOfWork.Users
-                .GetFirstOrDefault(x => x.UserId == userId && !x.IsDelete);
+                .GetFirstOrDefault(x => x.UserId == userId);
 
             if (user == null)
                 throw new BadRequestException(Message.Error.NotFound("User"));
+
             User? emailExists = await _unitOfWork.Users
                 .GetFirstOrDefault(x => x.Email.ToLower() == request.Email.ToLower()
                                      && x.UserId != userId
@@ -115,13 +122,16 @@ namespace HelpDesk.Business.Services.Implementation
 
             if (roleExists == null)
                 throw new BadRequestException(Message.Error.NotFound("Role"));
-            User editedUser = _mapper.Map<User>(request);
+
+            user.FullName = request.FullName ?? user.FullName;
+            user.Email = request.Email ?? user.Email;
+            user.Password = user.Password;
+            user.RoleId = request.RoleId != 0 ? request.RoleId : user.RoleId;
+            user.IsActive = request.IsActive;
             _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveAsync();
-
             return true;
         }
-
 
     }
 }

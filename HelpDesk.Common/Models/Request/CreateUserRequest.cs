@@ -16,6 +16,9 @@ namespace HelpDesk.Common.Models.Request
 
         [Required(ErrorMessage = Message.Validation.RequiredTemplate)]
         public int RoleId { get; set; }
+
+        [Required(ErrorMessage = Message.Validation.RequiredTemplate)]
+        public bool IsActive { get; set; }
     }
 
 }

@@ -19,7 +19,7 @@ namespace HelpDeskApi.controller
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("get-users")]
         public async Task<IActionResult> GetUsers(UserPaginationRequest userPaginationRequest)
         {
             PaginationResponse<UserListResponse> users = await _userService.UserList(userPaginationRequest);

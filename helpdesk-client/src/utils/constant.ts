@@ -12,6 +12,9 @@ export const Routes = {
   AGENT_MY_TICKET: "/Agent/MyTicket",
   AGENT_TICKET_DETAIL: "/Agent/Ticket/Detail/:id",
   AGENT_ALL_TICKET_LIST: "/Agent/Tickets",
+  ADMIN_USER_LIST: "/Manage/Users",
+  ADMIN_USER_CREATE: "/Manage/Create/Users",
+  ADMIN_USER_EDIT: "/Manage/Edit/Users/:id",
 } as const;
 
 export const Roles = {

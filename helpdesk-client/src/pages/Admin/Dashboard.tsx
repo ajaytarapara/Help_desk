@@ -10,6 +10,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { CustomButton, CustomCard } from "../../Components/common";
+import { Routes } from "../../utils/constant";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -180,12 +181,16 @@ const AdminDashboard = () => {
                   sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }}
                 />
                 <Typography variant="h6" fontWeight={600}>
-                  Manage Agents
+                  Manage Users
                 </Typography>
                 <Typography variant="body2" color="#6c757d" mb={2}>
-                  Add or remove agents
+                  Update, Add and Delete Users
                 </Typography>
-                <CustomButton variant="outlined" fullWidth size="small">
+                <CustomButton
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  onClick={() => navigate(Routes.ADMIN_USER_LIST)}>
                   Manage
                 </CustomButton>
               </ActionCard>

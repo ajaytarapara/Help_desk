@@ -69,3 +69,13 @@ export const signUpValidationSchema = Yup.object({
     .required(VALIDATION_MESSAGES.REQUIRED_FIELD("Confirm Password"))
     .oneOf([Yup.ref("password")], "Passwords must match"),
 });
+
+export const UserSchema = Yup.object().shape({
+  fullName: Yup.string()
+    .max(200, "Max 200 characters allowed")
+    .required("Full Name is required"),
+
+  email: Yup.string().email("Invalid email").required("Email is required"),
+
+  roleId: Yup.number().required("Role is required"),
+});

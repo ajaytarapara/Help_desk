@@ -1,6 +1,5 @@
 import { lazy } from "react";
 import { Roles, Routes } from "../../../utils/constant";
-
 // --- Lazy Imports (Code Splitting) ---
 const AdminDashboard = lazy(() => import("../../../pages/Admin/Dashboard"));
 const AgentDashboard = lazy(() => import("../../../pages/Agent/Dashboard"));
@@ -14,7 +13,8 @@ const TicketDetailsPage = lazy(
 
 const MyAgentTickets = lazy(() => import("../../../pages/Agent/MyTicketsPage"));
 const AllTickets = lazy(() => import("../../../pages/Agent/AllTicketsPage"));
-
+const Users = lazy(() => import("../../../pages/Admin/Users"));
+const CreateUser = lazy(() => import("../../../pages/Admin/CreateUser"));
 // --- Protected Routes ---
 export const protectedRoutes = [
   // 🧑‍💻 User Routes
@@ -70,6 +70,21 @@ export const protectedRoutes = [
   {
     path: Routes.ADMIN_DASHBOARD,
     element: <AdminDashboard />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_USER_LIST,
+    element: <Users />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_USER_CREATE,
+    element: <CreateUser />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_USER_EDIT,
+    element: <CreateUser />,
     roles: [Roles.ADMIN],
   },
 ];

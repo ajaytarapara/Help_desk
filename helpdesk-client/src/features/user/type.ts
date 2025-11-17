@@ -26,4 +26,5 @@ export interface UserListResponse {
 
 export interface UserPaginationRequest extends PaginationRequest {
   isActive?: boolean;
+  roleId?: number;
 }

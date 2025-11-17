@@ -35,11 +35,13 @@ namespace HelpDesk.Business.Services.Implementation
             string searchKey = request.Search?.Trim().ToLower();
 
             Expression<Func<User, bool>> filter = x =>
-               x.IsDelete == false &&
-                (string.IsNullOrEmpty(searchKey)
-                    || x.FullName.ToLower().Contains(searchKey)
-                    || x.Email.ToLower().Contains(searchKey)) &&
-             (!request.IsActive.HasValue || x.IsActive == request.IsActive.Value);
+            x.IsDelete == false &&
+            (string.IsNullOrEmpty(searchKey)
+                || x.FullName.ToLower().Contains(searchKey.ToLower())
+                || x.Email.ToLower().Contains(searchKey.ToLower())) &&
+            (!request.IsActive.HasValue || x.IsActive == request.IsActive.Value) &&
+            (!request.RoleId.HasValue || x.RoleId == request.RoleId.Value);
+
 
             if (string.IsNullOrWhiteSpace(request.OrderBy) || request.OrderBy == "UserId")
             {

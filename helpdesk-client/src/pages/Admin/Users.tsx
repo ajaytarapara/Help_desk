@@ -4,7 +4,6 @@ import {
   ArrowBack,
   FilterList,
   Add,
-  VisibilityOutlined,
   Delete,
   Mode,
   Search,
@@ -24,13 +23,13 @@ import {
   getAllUsersThunk,
   deleteUserThunk,
 } from "../../features/user/userThunk";
+import { getAllRolesThunk } from "../../features/dropDown/dropDownThunk";
 
 import {
   DefaultPageNumber,
   DefaultPageSize,
   Routes,
 } from "../../utils/constant";
-
 import {
   TicketRoot,
   TicketHeader,
@@ -41,11 +40,14 @@ import {
 } from "../../Components/common/ui/TicketStyled";
 
 import { FilterCountBadge } from "../../Components/common/ui/CommonStyled";
+import { UserFilterDrawer } from "../../Components/common/UserFilterDrawer";
+
+import { SelectListItem } from "../../features/dropDown/types";
 import {
   UserListResponse,
   UserPaginationRequest,
 } from "../../features/user/type";
-import { PaginationResponse } from "../../features/auth/types";
+import { PaginationResponse, ApiResponse } from "../../features/auth/types";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -64,25 +66,38 @@ const Users = () => {
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  // Delete Dialog
+  // Dialogs
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deletedId, setDeletedId] = useState<number>(0);
 
+  // Filters
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [roleList, setRoleList] = useState<SelectListItem[]>([]);
+  const [userFilters, setUserFilters] = useState({
+    roleId: "",
+    status: "",
+  });
+
   // Pagination Handlers
   const handlePageChange = (newPage: number) => setPage(newPage);
-
   const handleRowsPerPageChange = (rows: number) => {
     setRowsPerPage(rows);
     setPage(DefaultPageNumber);
   };
-
   const handleSort = (key: keyof UserListResponse) => {
     const newOrder = sortKey === key && sortOrder === "asc" ? "desc" : "asc";
     setSortKey(key);
     setSortOrder(newOrder);
   };
 
-  // Fetch User List
+  // Fetch roles for filter dropdown
+  const fetchUserRoles = async () => {
+    const response = await dispatch(getAllRolesThunk());
+    const data = (response.payload as ApiResponse<SelectListItem[]>)?.data;
+    if (data) setRoleList(data);
+  };
+
+  // Fetch Users with filters, pagination, and search
   const getUserList = async () => {
     const payload: UserPaginationRequest = {
       pageNumber: page,
@@ -90,14 +105,19 @@ const Users = () => {
       search: searchValue,
       orderBy: sortKey,
       isDescending: sortOrder === "desc",
-      isActive: undefined,
+      roleId: userFilters.roleId ? Number(userFilters.roleId) : undefined,
+      isActive:
+        userFilters.status === "true"
+          ? true
+          : userFilters.status === "false"
+          ? false
+          : undefined,
     };
 
     const response = await dispatch(getAllUsersThunk(payload));
     const paginationData = (
       response.payload as PaginationResponse<UserListResponse>
-    ).data;
-
+    )?.data;
     if (paginationData) {
       setUserList(paginationData.items);
       setTotalRow(paginationData.totalCount);
@@ -116,8 +136,15 @@ const Users = () => {
   };
 
   useEffect(() => {
+    fetchUserRoles();
+  }, []);
+
+  useEffect(() => {
     getUserList();
-  }, [page, sortKey, sortOrder, rowsPerPage]);
+  }, [page, sortKey, sortOrder, rowsPerPage, userFilters]);
+
+  // Count of applied filters
+  const filterCount = Object.values(userFilters).filter((v) => v).length;
 
   return (
     <TicketRoot>
@@ -128,7 +155,6 @@ const Users = () => {
             <BackStyledButton onClick={() => navigate(-1)}>
               <ArrowBack />
             </BackStyledButton>
-
             <Box>
               <Typography variant="h4" fontWeight={800} color="#1a1a1a">
                 Manage Users
@@ -138,7 +164,6 @@ const Users = () => {
               </Typography>
             </Box>
           </Box>
-
           <CustomButton
             variant="contained"
             startIcon={<Add />}
@@ -147,34 +172,47 @@ const Users = () => {
           </CustomButton>
         </TicketHeader>
 
-        {/* Search Box */}
+        {/* Search & Filter */}
         <TicketSearchBox>
           <Box>
             <TicketTextField
               placeholder="Search User"
               fullWidth
               size="small"
+              value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
           </Box>
-
           <Box>
             <FilterIconButton color="primary" onClick={handleSearch}>
               <Search />
             </FilterIconButton>
           </Box>
-
           <Box>
-            <FilterIconButton color="primary" disabled>
+            <FilterIconButton
+              color="primary"
+              onClick={() => setFilterDrawerOpen(true)}>
               <FilterList />
-              {/* No filters yet */}
-              {false && <FilterCountBadge>0</FilterCountBadge>}
+              {filterCount > 0 && (
+                <FilterCountBadge>{filterCount}</FilterCountBadge>
+              )}
             </FilterIconButton>
           </Box>
         </TicketSearchBox>
 
-        {/* Table */}
+        <UserFilterDrawer
+          open={filterDrawerOpen}
+          onClose={() => setFilterDrawerOpen(false)}
+          filterValues={userFilters}
+          setFilterValues={(filters) => {
+            setUserFilters(filters);
+            setPage(DefaultPageNumber);
+          }}
+          roleList={roleList}
+        />
+
+        {/* Users Table */}
         {userList.length > 0 ? (
           <DataTable
             data={userList}
@@ -221,7 +259,6 @@ const Users = () => {
                   onClick={() => navigate(`/Manage/Edit/Users/${row.userId}`)}>
                   <Mode />
                 </IconButton>
-
                 <IconButton
                   color="error"
                   onClick={() => {
@@ -237,7 +274,6 @@ const Users = () => {
           <NoDataFound />
         )}
 
-        {/* Delete Confirmation Dialog */}
         <DeleteDialog
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}

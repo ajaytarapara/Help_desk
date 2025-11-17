@@ -23,7 +23,7 @@ export const updateUser = async (
 };
 
 export const deleteUser = async (id: number): Promise<ApiResponse<boolean>> => {
-  const response = await axiosClient.delete(`/user/delete/${id}`);
+  const response = await axiosClient.delete(`AdminApi/user/delete/${id}`);
   return response.data;
 };
 

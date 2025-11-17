@@ -35,7 +35,7 @@ namespace HelpDesk.Business.Services.Implementation
             string searchKey = request.Search?.Trim().ToLower();
 
             Expression<Func<User, bool>> filter = x =>
-
+               x.IsDelete == false &&
                 (string.IsNullOrEmpty(searchKey)
                     || x.FullName.ToLower().Contains(searchKey)
                     || x.Email.ToLower().Contains(searchKey)) &&

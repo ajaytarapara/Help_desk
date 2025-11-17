@@ -51,6 +51,7 @@ namespace HelpDesk.Common.Constants
             public const string ParentTicketMismatch = "Parent comment must belong to the same ticket.";
             public const string YouAreAuthToComment = "You are not authorized to comment on this ticket.";
             public const string NotOwner = "Only the owner of the comment is allowed to edit.";
+            public const string CategoryAlreadyExist = "The entered category already exists in the system. Provide a unique category name.";
         }
 
         public static class Success

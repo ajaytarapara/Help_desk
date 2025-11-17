@@ -13,5 +13,10 @@ namespace HelpDesk.Data.Entities
         public string PriorityName { get; set; } = string.Empty;
 
         public bool IsDelete { get; set; } = false;
+
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
+        public DateTime? UpdatedDate { get; set; }
+
     }
 }

@@ -23,7 +23,9 @@ namespace HelpDesk.Business.Mapping
             CreateMap<TicketResponse, Ticket>().ReverseMap();
             CreateMap<Priority, PriorityResponse>().ReverseMap();
             CreateMap<Status, StatusResponse>().ReverseMap();
-            CreateMap<Category, CategoryResponse>().ReverseMap();
+            CreateMap<Category, CategoryResponse>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.CategoryId))
+            .ReverseMap();
             CreateMap<User, UserResponse>().ReverseMap();
 
             CreateMap<AssignTicketRequest, Ticket>().ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => 2))
@@ -62,6 +64,8 @@ namespace HelpDesk.Business.Mapping
             CreateMap<User, UserListResponse>()
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.RoleName))
             .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.RoleId));
+
+            CreateMap<CreateCategoryRequest, Category>();
 
         }
     }

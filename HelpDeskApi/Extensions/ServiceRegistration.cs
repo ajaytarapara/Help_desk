@@ -26,6 +26,8 @@ namespace HelpDeskApi.Extensions
             services.AddScoped<ICommentService, CommentService>();
 
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<ICategoryService, CategoryService>();
         }
     }
 }

@@ -51,6 +51,7 @@ namespace HelpDesk.Common.Constants
             public const string ParentTicketMismatch = "Parent comment must belong to the same ticket.";
             public const string YouAreAuthToComment = "You are not authorized to comment on this ticket.";
             public const string NotOwner = "Only the owner of the comment is allowed to edit.";
+            public const string YouCanNotDelete = "You cannot delete your own account.";
         }
 
         public static class Success
@@ -74,6 +75,8 @@ namespace HelpDesk.Common.Constants
             public const string MaxLengthTemplate = "{0} cannot exceed {1} characters.";
             public const string InvalidPassword = "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.";
             public const string GreaterThanZeroTemplate = "{0} must be greater than zero.";
+            public const string MinLengthTemplate = "{0} must be at least {1} characters.";
+
         }
     }
 }

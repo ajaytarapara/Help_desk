@@ -8,5 +8,8 @@ namespace HelpDesk.Business.Services.Interfaces
     {
         Task<PaginationResponse<UserListResponse>> UserList(UserPaginationRequest userPaginationRequest);
         Task<UserListResponse> GetByIdUser(int id);
+        Task<int> CreateUser(CreateUserRequest request);
+        Task<bool> DeleteUser(int id);
+        Task<bool> UpdateUser(int userId, CreateUserRequest request);
     }
 }

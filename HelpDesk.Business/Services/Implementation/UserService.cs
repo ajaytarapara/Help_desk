@@ -1,11 +1,14 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using HelpDesk.Business.Services.Interfaces;
+using HelpDesk.Common.Constants;
 using HelpDesk.Common.Models.Common;
 using HelpDesk.Common.Models.Request;
 using HelpDesk.Common.Models.Response;
 using HelpDesk.Data.Entities;
+using HelpDesk.Data.Helper;
 using HelpDesk.Data.Repositories.Interfaces;
+using static HelpDesk.Common.Exceptions.Exceptions;
 
 namespace HelpDesk.Business.Services.Implementation
 {
@@ -13,10 +16,12 @@ namespace HelpDesk.Business.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly ICurrentUserService _currentUserService;
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _currentUserService = currentUserService;
         }
 
         public async Task<UserListResponse> GetByIdUser(int id)
@@ -47,6 +52,76 @@ namespace HelpDesk.Business.Services.Implementation
                 pagedData.PageSize
             );
         }
+
+        public async Task<int> CreateUser(CreateUserRequest request)
+        {
+            User? emailExists = await _unitOfWork.Users
+                .GetFirstOrDefault(x => x.Email.ToLower() == request.Email.ToLower() && !x.IsDelete);
+
+            if (emailExists != null)
+                throw new BadRequestException(Message.Error.EmailAlreadyExist);
+
+            UserRole? roleExists = await _unitOfWork.Roles
+                .GetFirstOrDefault(r => r.RoleId == request.RoleId);
+
+            if (roleExists == null)
+                throw new BadRequestException(Message.Error.NotFound("Role"));
+            User user = _mapper.Map<User>(request);
+            user.Password = PasswordHelper.HashPassword(user.Password);
+
+            await _unitOfWork.Users.AddAsync(user);
+            await _unitOfWork.SaveAsync();
+
+            return user.UserId;
+        }
+        public async Task<bool> DeleteUser(int id)
+        {
+            int currentUserId = _currentUserService.GetCurrentUserId();
+
+            if (currentUserId == id)
+                throw new BadRequestException(Message.Error.YouCanNotDelete);
+
+            User? user = await _unitOfWork.Users
+                .GetFirstOrDefault(x => x.UserId == id && !x.IsDelete);
+
+            if (user == null)
+                throw new BadRequestException(Message.Error.NotFound("User"));
+
+            user.IsDelete = true;
+            user.IsActive = false;
+
+            _unitOfWork.Users.Update(user);
+            await _unitOfWork.SaveAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UpdateUser(int userId, CreateUserRequest request)
+        {
+            User? user = await _unitOfWork.Users
+                .GetFirstOrDefault(x => x.UserId == userId && !x.IsDelete);
+
+            if (user == null)
+                throw new BadRequestException(Message.Error.NotFound("User"));
+            User? emailExists = await _unitOfWork.Users
+                .GetFirstOrDefault(x => x.Email.ToLower() == request.Email.ToLower()
+                                     && x.UserId != userId
+                                     && !x.IsDelete);
+
+            if (emailExists != null)
+                throw new BadRequestException(Message.Error.EmailAlreadyExist);
+            UserRole? roleExists = await _unitOfWork.Roles
+                .GetFirstOrDefault(r => r.RoleId == request.RoleId);
+
+            if (roleExists == null)
+                throw new BadRequestException(Message.Error.NotFound("Role"));
+            User editedUser = _mapper.Map<User>(request);
+            _unitOfWork.Users.Update(user);
+            await _unitOfWork.SaveAsync();
+
+            return true;
+        }
+
 
     }
 }

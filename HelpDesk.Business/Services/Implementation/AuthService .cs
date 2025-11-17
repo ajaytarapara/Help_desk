@@ -25,7 +25,7 @@ namespace HelpDesk.Business.Services.Implementation
 
         public async Task<string> LoginAsync(LoginRequest loginRequest)
         {
-            User? user = await _unitOfWork.Users.GetFirstOrDefault(x => x.Email == loginRequest.Email, u => u.Role);
+            User? user = await _unitOfWork.Users.GetFirstOrDefault(x => x.Email == loginRequest.Email && x.IsActive, u => u.Role );
             if (user == null)
                 throw new NotFoundException(Message.Error.UserNotFound);
             string HashCodes = PasswordHelper.HashPassword(loginRequest.Password);
@@ -39,7 +39,7 @@ namespace HelpDesk.Business.Services.Implementation
 
         public async Task<User> RegisterAsync(RegisterRequest request)
         {
-            User? existingUser = await _unitOfWork.Users.GetFirstOrDefault(X => X.Email == request.Email);
+            User? existingUser = await _unitOfWork.Users.GetFirstOrDefault(X => X.Email == request.Email && X.IsActive);
             if (existingUser != null)
                 throw new BadRequestException(Message.Error.EmailAlreadyExist);
             User user = _mapper.Map<User>(request);

@@ -11,7 +11,7 @@ namespace HelpDesk.Data.Repositories.Implementations
         private IPriorityRepository? _priorityRepository;
         private IStatusRepository? _statusRepository;
         private ICommentRepository? _commentRepository;
-
+        private IRoleRepository? _roleRepository;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -33,6 +33,8 @@ namespace HelpDesk.Data.Repositories.Implementations
         public IStatusRepository Status => _statusRepository ??= new StatusRepository(_context);
 
         public ICommentRepository Comment => _commentRepository ??= new CommentRepository(_context);
+
+        public IRoleRepository Roles => _roleRepository ??= new RoleRepository(_context);
     }
 
 }

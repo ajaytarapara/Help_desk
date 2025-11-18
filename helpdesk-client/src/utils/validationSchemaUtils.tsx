@@ -72,17 +72,19 @@ export const signUpValidationSchema = Yup.object({
 
 export const UserSchema = Yup.object().shape({
   fullName: Yup.string()
-    .max(200, "Max 200 characters allowed")
-    .required("Full Name is required"),
+    .max(200, VALIDATION_MESSAGES.MAX_LENGTH("full name", 200))
+    .required(VALIDATION_MESSAGES.REQUIRED_FIELD("full name")),
 
-  email: Yup.string().email("Invalid email").required("Email is required"),
+  email: Yup.string()
+    .email(VALIDATION_MESSAGES.INVALID_EMAIL)
+    .required(VALIDATION_MESSAGES.REQUIRED_FIELD("Email")),
 
-  roleId: Yup.number().required("Role is required"),
-  isActive: Yup.string().required("Status is required"),
+  roleId: Yup.number().required(VALIDATION_MESSAGES.REQUIRED_FIELD("Role")),
+  isActive: Yup.string().required(VALIDATION_MESSAGES.REQUIRED_FIELD("Status")),
 });
 
 export const CategorySchema = Yup.object().shape({
   categoryName: Yup.string()
-    .max(100, "Category Name must be at most 100 characters")
-    .required("Category Name is required"),
+    .max(100, VALIDATION_MESSAGES.MAX_LENGTH("Category Name", 100))
+    .required(VALIDATION_MESSAGES.REQUIRED_FIELD("Category Name")),
 });

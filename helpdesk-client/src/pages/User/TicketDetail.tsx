@@ -51,11 +51,9 @@ const TicketDetailsPage: React.FC = () => {
     );
   }
 
-  const formattedCreatedDate = dayjs(ticket.createdDate).format(
-    "DD MMM YYYY, HH:mm"
-  );
+  const formattedCreatedDate = dayjs(ticket.createdDate).format("DD MMM YYYY");
   const formattedUpdatedDate = ticket.updatedDate
-    ? dayjs(ticket.updatedDate).format("DD MMM YYYY, HH:mm")
+    ? dayjs(ticket.updatedDate).format("DD MMM YYYY")
     : "N/A";
 
   return (

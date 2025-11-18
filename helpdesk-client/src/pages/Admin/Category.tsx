@@ -79,6 +79,7 @@ const Category = () => {
 
   const handleDelete = async () => {
     await dispatch(deleteCategoryThunk(deletedId));
+    setPage(DefaultPageNumber);
     getCategoryList();
     setDialogOpen(false);
   };

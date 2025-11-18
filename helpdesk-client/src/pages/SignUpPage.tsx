@@ -50,7 +50,6 @@ const Signup = () => {
       setSubmitting(false);
     },
   });
-  console.log(formik.errors);
 
   return (
     <AuthLayout>

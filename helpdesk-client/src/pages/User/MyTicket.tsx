@@ -37,7 +37,6 @@ import {
 import dayjs from "dayjs";
 import { TicketFilterDrawer } from "../../Components/common/TicketFilterDrawer";
 
-// ✅ Import shared styled components
 import {
   TicketRoot,
   TicketHeader,
@@ -112,6 +111,7 @@ const MyTickets = () => {
 
   const handleDelete = async () => {
     await dispatch(deleteTicketThunk(deletedId));
+    setPage(DefaultPageNumber);
     getMyTicketList();
     setDialogOpen(false);
   };

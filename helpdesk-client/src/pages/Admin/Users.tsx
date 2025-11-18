@@ -131,16 +131,19 @@ const Users = () => {
 
   const handleDelete = async () => {
     await dispatch(deleteUserThunk(deletedId));
+    setPage(DefaultPageNumber);
     getUserList();
     setDialogOpen(false);
   };
 
   useEffect(() => {
     fetchUserRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getUserList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, sortKey, sortOrder, rowsPerPage, userFilters]);
 
   // Count of applied filters

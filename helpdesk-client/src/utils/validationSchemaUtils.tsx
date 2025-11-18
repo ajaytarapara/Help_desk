@@ -78,6 +78,7 @@ export const UserSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
 
   roleId: Yup.number().required("Role is required"),
+  isActive: Yup.string().required("Status is required"),
 });
 
 export const CategorySchema = Yup.object().shape({

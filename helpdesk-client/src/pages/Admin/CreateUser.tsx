@@ -34,7 +34,7 @@ const CreateUser = () => {
     fullName: "",
     email: "",
     roleId: "",
-    isActive: "true",
+    isActive: "",
   });
 
   const [roleList, setRoleList] = useState<SelectListItem[]>([]);
@@ -70,7 +70,6 @@ const CreateUser = () => {
     initialValues,
     validationSchema: UserSchema,
     onSubmit: async (values, { resetForm }) => {
-      // Convert string → boolean for API
       const isActiveBoolean = values.isActive === "true";
 
       let result;
@@ -176,6 +175,9 @@ const CreateUser = () => {
                   label="Status"
                   select
                   required>
+                  <MenuItem value="" disabled>
+                    Select Status
+                  </MenuItem>
                   <MenuItem value="true">Active</MenuItem>
                   <MenuItem value="false">Inactive</MenuItem>
                 </FormField>

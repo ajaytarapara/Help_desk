@@ -22,7 +22,12 @@ export const createComment = async (
 ): Promise<ApiResponse<string>> => {
   const response = await axiosClient.post<ApiResponse<string>>(
     `/comment/create`,
-    data
+    data,
+    {
+      headers: {
+        showToast: false,
+      },
+    }
   );
   return response.data;
 };
@@ -32,7 +37,12 @@ export const editComment = async (
 ): Promise<ApiResponse<string>> => {
   const response = await axiosClient.put<ApiResponse<string>>(
     `/comment/${data.commentId}`,
-    { commentMessage: data.commentMessage }
+    { commentMessage: data.commentMessage },
+    {
+      headers: {
+        showToast: false,
+      },
+    }
   );
   return response.data;
 };
@@ -41,7 +51,12 @@ export const deleteComment = async (
   commentId: number
 ): Promise<ApiResponse<string>> => {
   const response = await axiosClient.delete<ApiResponse<string>>(
-    `/comment/${commentId}`
+    `/comment/${commentId}`,
+    {
+      headers: {
+        showToast: false,
+      },
+    }
   );
   return response.data;
 };

@@ -48,11 +48,12 @@ import {
   UserPaginationRequest,
 } from "../../features/user/type";
 import { PaginationResponse, ApiResponse } from "../../features/auth/types";
+import { getUserId } from "../../utils/authUtils";
 
 const Users = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-
+  const loggedInUserId = getUserId();
   // Data states
   const [userList, setUserList] = useState<UserListResponse[]>([]);
   const [searchValue, setSearchValue] = useState("");
@@ -259,7 +260,8 @@ const Users = () => {
               <Box>
                 <IconButton
                   color="primary"
-                  onClick={() => navigate(`/Manage/Edit/Users/${row.userId}`)}>
+                  onClick={() => navigate(`/Manage/Edit/Users/${row.userId}`)}
+                  disabled={loggedInUserId === row.userId.toString()}>
                   <Mode />
                 </IconButton>
                 <IconButton
@@ -267,7 +269,8 @@ const Users = () => {
                   onClick={() => {
                     setDialogOpen(true);
                     setDeletedId(row.userId);
-                  }}>
+                  }}
+                  disabled={loggedInUserId === row.userId.toString()}>
                   <Delete />
                 </IconButton>
               </Box>

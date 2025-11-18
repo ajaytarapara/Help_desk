@@ -76,7 +76,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
     <CommentCard id={`comment-${comment.commentId}`}>
       <Box display="flex" alignItems="center" gap={1}>
         <Avatar sx={{ bgcolor: "#9d174d", width: 36, height: 36 }}>
-          {comment.createdBy?.slice(0, 2).toUpperCase()}
+          {comment.createdBy[0]?.toUpperCase()}
         </Avatar>
         <Box flex={1}>
           <Typography fontWeight={600}>

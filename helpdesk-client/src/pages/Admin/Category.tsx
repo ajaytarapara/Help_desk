@@ -41,7 +41,7 @@ const Category = () => {
   const [totalRow, setTotalRow] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(DefaultPageSize);
 
-  const [sortKey, setSortKey] = useState<string>("id");
+  const [sortKey, setSortKey] = useState<string>("categoryId");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const [dialogOpen, setDialogOpen] = useState(false);

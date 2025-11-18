@@ -2,7 +2,7 @@ namespace HelpDesk.Common.Constants
 {
     public class Constants
     {
-        public static class UserRole
+        public static class UserRoles
         {
             public const string User = "User";
             public const string Agent = "Agent";

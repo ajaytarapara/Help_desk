@@ -7,6 +7,7 @@ using HelpDesk.Common.Models.Request;
 using HelpDesk.Common.Models.Response;
 using HelpDesk.Data.Entities;
 using HelpDesk.Data.Repositories.Interfaces;
+using static HelpDesk.Common.Constants.Constants;
 using static HelpDesk.Common.Exceptions.Exceptions;
 
 namespace HelpDesk.Business.Services.Implementation
@@ -69,7 +70,25 @@ namespace HelpDesk.Business.Services.Implementation
 
         public async Task DeleteAsync(int categoryId)
         {
-            Category category = await GetCategoryById(categoryId);
+            Category? category = await GetCategoryById(categoryId);
+            if (category == null)
+                throw new BadRequestException(Message.Error.NotFound("Category"));
+
+            Status? openStatus = await _unitOfWork.Status
+                .GetFirstOrDefault(s => s.StatusName == TicketStatus.Open);
+
+            Status? inProgressStatus = await _unitOfWork.Status
+                .GetFirstOrDefault(s => s.StatusName == TicketStatus.InProgress);
+
+            IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t =>
+                t.CategoryId == categoryId &&
+                (t.StatusId == openStatus.StatusId ||
+                 t.StatusId == inProgressStatus.StatusId)
+            );
+
+            if (hasActiveTickets.Count() > 0)
+                throw new BadRequestException(Message.Error.CanNotDeleteTicket);
+
             category.IsDelete = true;
             category.UpdatedDate = DateTime.UtcNow;
             _unitOfWork.Categories.Update(category);
@@ -91,7 +110,6 @@ namespace HelpDesk.Business.Services.Implementation
 
             return category;
         }
-
 
         private async Task<Category> GetCategoryById(int categoryId)
         {

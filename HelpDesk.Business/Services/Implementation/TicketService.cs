@@ -47,7 +47,7 @@ namespace HelpDesk.Business.Services.Implementation
 
             Ticket ticket = await TicketExist(ticketId);
 
-            if (ticket.CreatedById != UserId && UserRole == Constants.UserRole.User)
+            if (ticket.CreatedById != UserId && UserRole == Constants.UserRoles.User)
                 throw new BadRequestException(Message.Error.UnauthorizedAccess("Ticket"));
 
             TicketResponse ticketResponse = _mapper.Map<TicketResponse>(ticket);
@@ -67,7 +67,7 @@ namespace HelpDesk.Business.Services.Implementation
                 User agent = await UserExist(request.AssignedToId);
 
                 // 1. Assigned user must have Agent role
-                if (agent.Role.RoleName != Constants.UserRole.Agent)
+                if (agent.Role.RoleName != Constants.UserRoles.Agent)
                     throw new BadRequestException(Message.Error.AssignedUserMustBeAgent);
             }
 
@@ -127,7 +127,7 @@ namespace HelpDesk.Business.Services.Implementation
                 throw new BadRequestException(Message.Error.TicketMustBeOpen);
 
             //check role
-            if (user.Role.RoleName != Constants.UserRole.Agent)
+            if (user.Role.RoleName != Constants.UserRoles.Agent)
                 throw new BadRequestException(Message.Error.AssignedUserMustBeAgent);
 
             Ticket assignedTicket = _mapper.Map(ticketRequest, ticket);
@@ -234,7 +234,7 @@ namespace HelpDesk.Business.Services.Implementation
             {
                 // For GetAll — your previous logic
                 filter = x =>
-                   (role != Constants.UserRole.User || x.CreatedById == userId) &&
+                   (role != Constants.UserRoles.User || x.CreatedById == userId) &&
                     !x.IsDeleted &&
                     (paginationRequest.AssignedToId == 0 || x.AssignedToId == paginationRequest.AssignedToId) &&
                     (paginationRequest.StatusId == 0 || x.StatusId == paginationRequest.StatusId) &&

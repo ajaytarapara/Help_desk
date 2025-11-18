@@ -8,6 +8,7 @@ using HelpDesk.Common.Models.Response;
 using HelpDesk.Data.Entities;
 using HelpDesk.Data.Helper;
 using HelpDesk.Data.Repositories.Interfaces;
+using static HelpDesk.Common.Constants.Constants;
 using static HelpDesk.Common.Exceptions.Exceptions;
 
 namespace HelpDesk.Business.Services.Implementation
@@ -90,11 +91,32 @@ namespace HelpDesk.Business.Services.Implementation
                 throw new BadRequestException(Message.Error.YouCanNotDelete);
 
             User? user = await _unitOfWork.Users
-                .GetFirstOrDefault(x => x.UserId == id && !x.IsDelete);
+                .GetFirstOrDefault(x => x.UserId == id && !x.IsDelete, x => x.Role);
 
             if (user == null)
                 throw new BadRequestException(Message.Error.NotFound("User"));
 
+            bool isAgent = user.Role?.RoleName == UserRoles.Agent;
+
+            if (isAgent)
+            {
+                Status? openStatus = await _unitOfWork.Status
+                    .GetFirstOrDefault(s => s.StatusName == TicketStatus.Open);
+
+                Status? inProgressStatus = await _unitOfWork.Status
+                    .GetFirstOrDefault(s => s.StatusName == TicketStatus.InProgress);
+
+                IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t =>
+                    t.AssignedToId == id &&
+                    (t.StatusId == openStatus.StatusId ||
+                     t.StatusId == inProgressStatus.StatusId)
+                );
+
+                if (hasActiveTickets.Count() > 0)
+                {
+                    throw new BadRequestException(Message.Error.UserHaveAssignedTicket);
+                }
+            }
             user.IsDelete = true;
             user.IsActive = false;
 
@@ -104,34 +126,74 @@ namespace HelpDesk.Business.Services.Implementation
             return true;
         }
 
+
         public async Task<bool> UpdateUser(int userId, CreateUserRequest request)
         {
+            // 1. Get user
             User? user = await _unitOfWork.Users
-                .GetFirstOrDefault(x => x.UserId == userId);
+                .GetFirstOrDefault(x => x.UserId == userId, x => x.Role);
 
             if (user == null)
                 throw new BadRequestException(Message.Error.NotFound("User"));
 
+            // 2. Check duplicate email
             User? emailExists = await _unitOfWork.Users
-                .GetFirstOrDefault(x => x.Email.ToLower() == request.Email.ToLower()
-                                     && x.UserId != userId
-                                     && !x.IsDelete);
+                .GetFirstOrDefault(x =>
+                    x.Email.ToLower() == request.Email.ToLower()
+                    && x.UserId != userId
+                    && !x.IsDelete
+                );
 
             if (emailExists != null)
                 throw new BadRequestException(Message.Error.EmailAlreadyExist);
-            UserRole? roleExists = await _unitOfWork.Roles
+
+            // 3. Check if new role exists
+            UserRole? newRole = await _unitOfWork.Roles
                 .GetFirstOrDefault(r => r.RoleId == request.RoleId);
 
-            if (roleExists == null)
+            if (newRole == null)
                 throw new BadRequestException(Message.Error.NotFound("Role"));
 
+            // ROLE CHANGE VALIDATION (AGENT → NON-AGENT)
+            string? currentRoleName = user.Role != null ? user.Role.RoleName : null;
+            string newRoleName = newRole.RoleName;
+
+            bool isCurrentRoleAgent = currentRoleName == UserRoles.Agent;
+            bool isNewRoleAgent = newRoleName == UserRoles.Agent;
+
+            if (isCurrentRoleAgent && !isNewRoleAgent)
+            {
+                // Get Open status
+                Status? openStatus = await _unitOfWork.Status
+                    .GetFirstOrDefault(s => s.StatusName == TicketStatus.Open);
+
+                // Get In Progress status
+                Status? inProgressStatus = await _unitOfWork.Status
+                    .GetFirstOrDefault(s => s.StatusName == TicketStatus.InProgress);
+
+                if (openStatus == null || inProgressStatus == null)
+                    throw new BadRequestException(Message.Error.NotFound("Status"));
+
+                // Check if agent has active tickets
+                IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t =>
+                    t.AssignedToId == userId &&
+                    (t.StatusId == openStatus.StatusId ||
+                     t.StatusId == inProgressStatus.StatusId)
+                );
+
+                if (hasActiveTickets.Count() > 0)
+                {
+                    throw new BadRequestException(Message.Error.UserRoleNotEditIfTicket);
+                }
+            }
             user.FullName = request.FullName ?? user.FullName;
             user.Email = request.Email ?? user.Email;
-            user.Password = user.Password;
             user.RoleId = request.RoleId != 0 ? request.RoleId : user.RoleId;
             user.IsActive = request.IsActive;
+
             _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveAsync();
+
             return true;
         }
 

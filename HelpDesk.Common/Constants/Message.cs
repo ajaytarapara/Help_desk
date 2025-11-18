@@ -53,6 +53,10 @@ namespace HelpDesk.Common.Constants
             public const string NotOwner = "Only the owner of the comment is allowed to edit.";
             public const string YouCanNotDelete = "You cannot delete your own account.";
             public const string CategoryAlreadyExist = "The entered category already exists in the system. Provide a unique category name.";
+            public const string CanNotDeleteTicket = "Cannot delete this category. Tickets are still open or in progress.";
+            public const string UserHaveAssignedTicket = "This agent has active tickets. Close or reassign the tickets before deleting the user.";
+            public const string UserRoleNotEditIfTicket = "Role cannot be changed. This agent has active tickets (Open or In Progress). " +
+                        "Please close or reassign these tickets before changing the role.";
         }
 
         public static class Success

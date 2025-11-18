@@ -38,7 +38,7 @@ namespace HelpDesk.Business.Services.Implementation
 
         public async Task<IEnumerable<SelectListItemResponse>> GetAllAgentAsync()
         {
-            IEnumerable<User> agents = await _unitOfWork.Users.GetAllAsync(a => a.IsActive && a.Role.RoleName.ToLower() == Constants.UserRole.Agent.ToLower());
+            IEnumerable<User> agents = await _unitOfWork.Users.GetAllAsync(a => a.IsActive && a.Role.RoleName.ToLower() == Constants.UserRoles.Agent.ToLower());
             return _mapper.Map<IEnumerable<SelectListItemResponse>>(agents);
         }
 

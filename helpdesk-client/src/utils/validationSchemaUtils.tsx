@@ -88,3 +88,17 @@ export const CategorySchema = Yup.object().shape({
     .max(100, VALIDATION_MESSAGES.MAX_LENGTH("Category Name", 100))
     .required(VALIDATION_MESSAGES.REQUIRED_FIELD("Category Name")),
 });
+
+export const PrioritySchema = Yup.object().shape({
+  priorityName: Yup.string()
+    .trim()
+    .required(VALIDATION_MESSAGES.REQUIRED_FIELD("Priority"))
+    .max(50, VALIDATION_MESSAGES.MAX_LENGTH("Priority Name", 50)),
+});
+
+export const StatusSchema = Yup.object().shape({
+  statusName: Yup.string()
+    .trim()
+    .required(VALIDATION_MESSAGES.REQUIRED_FIELD("Status"))
+    .max(50, VALIDATION_MESSAGES.MAX_LENGTH("Status Name", 50)),
+});

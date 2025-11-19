@@ -2,6 +2,10 @@ import { lazy } from "react";
 import { Roles, Routes } from "../../../utils/constant";
 import Category from "../../../pages/Admin/Category";
 import CreateCategory from "../../../pages/Admin/CreateCategory";
+import Priority from "../../../pages/Admin/Priority";
+import CreatePriority from "../../../pages/Admin/CreatePriority";
+import Status from "../../../pages/Admin/Status";
+import CreateStatus from "../../../pages/Admin/CreateStatus";
 // --- Lazy Imports (Code Splitting) ---
 const AdminDashboard = lazy(() => import("../../../pages/Admin/Dashboard"));
 const AgentDashboard = lazy(() => import("../../../pages/Agent/Dashboard"));
@@ -107,6 +111,36 @@ export const protectedRoutes = [
   {
     path: Routes.ADMIN_CATEGORY_EDIT,
     element: <CreateCategory />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_PRIORITY_LIST,
+    element: <Priority />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_PRIORITY_CREATE,
+    element: <CreatePriority />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_PRIORITY_EDIT,
+    element: <CreatePriority />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_STATUS_LIST,
+    element: <Status />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_STATUS_CREATE,
+    element: <CreateStatus />,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: Routes.ADMIN_STATUS_EDIT,
+    element: <CreateStatus />,
     roles: [Roles.ADMIN],
   },
 ];

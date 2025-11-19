@@ -18,6 +18,12 @@ export const Routes = {
   ADMIN_CATEGORY_LIST: "/Manage/Category",
   ADMIN_CATEGORY_CREATE: "/Manage/Category/Create",
   ADMIN_CATEGORY_EDIT: "/Manage/Category/Edit/:id",
+  ADMIN_PRIORITY_CREATE: "/Manage/Priority/Create",
+  ADMIN_PRIORITY_EDIT: "/Manage/Priority/Edit/:id",
+  ADMIN_PRIORITY_LIST: "/Manage/Priority",
+  ADMIN_STATUS_CREATE: "/Manage/Status/Create",
+  ADMIN_STATUS_EDIT: "/Manage/Status/Edit/:id",
+  ADMIN_STATUS_LIST: "/Manage/Status",
 } as const;
 
 export const Roles = {

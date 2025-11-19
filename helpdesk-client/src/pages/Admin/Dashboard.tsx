@@ -219,12 +219,16 @@ const AdminDashboard = () => {
                   sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }}
                 />
                 <Typography variant="h6" fontWeight={600}>
-                  All Tickets
+                  Priority
                 </Typography>
                 <Typography variant="body2" color="#6c757d" mb={2}>
-                  Monitor all tickets
+                  Manage Priority
                 </Typography>
-                <CustomButton variant="outlined" fullWidth size="small">
+                <CustomButton
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  onClick={() => navigate(Routes.ADMIN_PRIORITY_LIST)}>
                   View All
                 </CustomButton>
               </ActionCard>
@@ -233,13 +237,17 @@ const AdminDashboard = () => {
               <ActionCard>
                 <Settings sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }} />
                 <Typography variant="h6" fontWeight={600}>
-                  Settings
+                  Status
                 </Typography>
                 <Typography variant="body2" color="#6c757d" mb={2}>
-                  Configure system
+                  Manage Status
                 </Typography>
-                <CustomButton variant="outlined" fullWidth size="small">
-                  Configure
+                <CustomButton
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  onClick={() => navigate(Routes.ADMIN_STATUS_LIST)}>
+                  View All
                 </CustomButton>
               </ActionCard>
             </Grid>

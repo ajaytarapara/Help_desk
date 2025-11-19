@@ -49,6 +49,7 @@ import {
 } from "../../features/user/type";
 import { PaginationResponse, ApiResponse } from "../../features/auth/types";
 import { getUserId } from "../../utils/authUtils";
+import useDebounce from "../../utils/hooks";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ const Users = () => {
     "userId"
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const useDebounceValue = useDebounce(searchValue);
 
   // Dialogs
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -125,11 +127,6 @@ const Users = () => {
     }
   };
 
-  const handleSearch = () => {
-    setPage(DefaultPageNumber);
-    getUserList();
-  };
-
   const handleDelete = async () => {
     await dispatch(deleteUserThunk(deletedId));
     setPage(DefaultPageNumber);
@@ -145,7 +142,7 @@ const Users = () => {
   useEffect(() => {
     getUserList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, sortKey, sortOrder, rowsPerPage, userFilters]);
+  }, [page, sortKey, sortOrder, rowsPerPage, userFilters, useDebounceValue]);
 
   // Count of applied filters
   const filterCount = Object.values(userFilters).filter((v) => v).length;
@@ -185,14 +182,9 @@ const Users = () => {
               size="small"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
           </Box>
-          <Box>
-            <FilterIconButton color="primary" onClick={handleSearch}>
-              <Search />
-            </FilterIconButton>
-          </Box>
+
           <Box>
             <FilterIconButton
               color="primary"

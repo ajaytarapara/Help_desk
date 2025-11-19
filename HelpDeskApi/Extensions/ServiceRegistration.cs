@@ -28,6 +28,8 @@ namespace HelpDeskApi.Extensions
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<ICategoryService, CategoryService>();
+
+            services.AddScoped<IPriorityService, PriorityService>();
         }
     }
 }

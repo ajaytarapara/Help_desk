@@ -73,6 +73,11 @@ namespace HelpDesk.Business.Mapping
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RoleId));
             CreateMap<CreateCategoryRequest, Category>();
 
+            CreateMap<Priority, PriorityResponse>()
+            .ForMember(dest => dest.PriorityName, opt => opt.MapFrom(src => src.PriorityName))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PriorityId));
+
+
         }
     }
 }

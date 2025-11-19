@@ -29,6 +29,7 @@ import {
 } from "../../Components/common";
 import { PaginationResponse } from "../../features/auth/types";
 import { CategoryResponse } from "../../features/category/type";
+import useDebounce from "../../utils/hooks";
 
 const Category = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const Category = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deletedId, setDeletedId] = useState<number>(0);
-
+  const useDebounceValue = useDebounce(searchValue);
   const handlePageChange = (newPage: number) => setPage(newPage);
   const handleRowsPerPageChange = (rows: number) => {
     setRowsPerPage(rows);
@@ -87,7 +88,7 @@ const Category = () => {
   useEffect(() => {
     getCategoryList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, sortKey, sortOrder, rowsPerPage]);
+  }, [page, sortKey, sortOrder, rowsPerPage, useDebounceValue]);
 
   return (
     <TicketRoot>
@@ -120,11 +121,7 @@ const Category = () => {
             size="small"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && getCategoryList()}
           />
-          <FilterIconButton color="primary" onClick={getCategoryList}>
-            <Search />
-          </FilterIconButton>
         </TicketSearchBox>
 
         {categoryList.length > 0 ? (

@@ -40,6 +40,7 @@ import {
   FilterIconButton,
   TicketSearchBox,
 } from "../../Components/common/ui/TicketStyled";
+import useDebounce from "../../utils/hooks";
 
 const MyTicketsPage = () => {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ const MyTicketsPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(DefaultPageSize);
   const [sortKey, setSortKey] = useState<keyof TicketAttr | undefined>();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
+  const useDebounceValue = useDebounce(searchValue);
   const handlePageChange = (newPage: number) => setPage(newPage);
   const handleRowsPerPageChange = (rows: number) => {
     setRowsPerPage(rows);
@@ -96,15 +97,10 @@ const MyTicketsPage = () => {
     }
   };
 
-  const handleSearch = () => {
-    setPage(DefaultPageNumber);
-    getMyTicketList();
-  };
-
   useEffect(() => {
     getMyTicketList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValues, page, sortKey, sortOrder, rowsPerPage]);
+  }, [filterValues, page, sortKey, sortOrder, rowsPerPage, useDebounceValue]);
 
   const handleStatusChange = async (ticketId: number, statusId: number) => {
     await dispatch(
@@ -145,13 +141,8 @@ const MyTicketsPage = () => {
               size="small"
               sx={{ alignItems: "flex-end", display: "flex" }}
               onChange={(event) => setSearchValue(event.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
           </Box>
-
-          <FilterIconButton color="primary" onClick={handleSearch}>
-            <Search />
-          </FilterIconButton>
 
           <Box>
             <FilterIconButton

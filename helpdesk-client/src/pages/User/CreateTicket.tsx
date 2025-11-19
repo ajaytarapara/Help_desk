@@ -39,7 +39,6 @@ const CreateTicket = () => {
     description: "",
   });
 
-  // ✅ Fetch ticket detail if in edit mode
   useEffect(() => {
     const fetchTicketDetail = async () => {
       const result = await dispatch(getTicketDetailThunk(Number(id)));

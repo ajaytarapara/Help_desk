@@ -25,7 +25,7 @@ namespace HelpDesk.Business.Services.Implementation
 
         public async Task<string> LoginAsync(LoginRequest loginRequest)
         {
-            User? user = await _unitOfWork.Users.GetFirstOrDefault(x => x.Email == loginRequest.Email && x.IsActive, u => u.Role );
+            User? user = await _unitOfWork.Users.GetFirstOrDefault(x => x.Email == loginRequest.Email && x.IsActive, u => u.Role);
             if (user == null)
                 throw new NotFoundException(Message.Error.UserNotFound);
             string HashCodes = PasswordHelper.HashPassword(loginRequest.Password);

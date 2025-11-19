@@ -57,6 +57,8 @@ namespace HelpDesk.Common.Constants
             public const string UserHaveAssignedTicket = "This agent has active tickets. Close or reassign the tickets before deleting the user.";
             public const string UserRoleNotEditIfTicket = "Role cannot be changed. This agent has active tickets (Open or In Progress). " +
                         "Please close or reassign these tickets before changing the role.";
+            public const string PriorityAlreadyExist = "The entered priority already exists in the system. Provide a unique priority name.";
+
         }
 
         public static class Success

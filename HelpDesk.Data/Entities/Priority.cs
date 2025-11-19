@@ -18,5 +18,7 @@ namespace HelpDesk.Data.Entities
 
         public DateTime? UpdatedDate { get; set; }
 
+        public bool IsSystemGenerated { get; set; } = false;
+
     }
 }

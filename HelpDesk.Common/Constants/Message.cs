@@ -58,6 +58,10 @@ namespace HelpDesk.Common.Constants
             public const string UserRoleNotEditIfTicket = "Role cannot be changed. This agent has active tickets (Open or In Progress). " +
                         "Please close or reassign these tickets before changing the role.";
             public const string PriorityAlreadyExist = "The entered priority already exists in the system. Provide a unique priority name.";
+            public const string ItIsSystemGenerated = "This is System generated, you can't modify or delete";
+            public const string CanNotDeleteTicketPriority = "Cannot delete this priority. Tickets are still open or in progress.";
+            public const string StatusAlreadyExist = "The entered status already exists in the system. Provide a unique status name.";
+            public const string CanNotDeleteTicketStatus = "Cannot delete this status. Tickets are still open or in progress.";
 
         }
 

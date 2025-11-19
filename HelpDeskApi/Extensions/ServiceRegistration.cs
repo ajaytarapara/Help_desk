@@ -30,6 +30,8 @@ namespace HelpDeskApi.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddScoped<IPriorityService, PriorityService>();
+
+            services.AddScoped<IStatusService, StatusService>();
         }
     }
 }

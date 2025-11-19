@@ -9,5 +9,7 @@ namespace HelpDesk.Business.Services.Interfaces
         Task<PaginationResponse<PriorityResponse>> GetAllPriority(PaginationRequest paginationRequest);
         Task<PriorityResponse> GetById(int priorityId);
         Task Create(CreatePriorityRequest createPriorityRequest);
+        Task Edit(int priorityId, CreatePriorityRequest editRequest);
+        Task Delete(int priorityId);
     }
 }

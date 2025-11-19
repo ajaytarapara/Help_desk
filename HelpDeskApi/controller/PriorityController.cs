@@ -33,11 +33,25 @@ namespace HelpDeskApi.controller
             return Success(priorityResponse);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Create(CreatePriorityRequest request)
         {
             await _priorityService.Create(request);
             return Success("", Message.Success.CreatedSuccess("Priority"));
+        }
+
+        [HttpPut("{priorityId}")]
+        public async Task<IActionResult> EditPriority(int priorityId, [FromBody] CreatePriorityRequest request)
+        {
+            await _priorityService.Edit(priorityId, request);
+            return Success(Message.Success.Request, Message.Success.UpdateSuccess("Priority"));
+        }
+
+        [HttpDelete("{priorityId}")]
+        public async Task<IActionResult> DeletePriority(int priorityId)
+        {
+            await _priorityService.Delete(priorityId);
+            return Success(Message.Success.Request, Message.Success.DeleteSuccess("Priority"));
         }
     }
 }

@@ -7,6 +7,7 @@ using HelpDesk.Common.Models.Request;
 using HelpDesk.Common.Models.Response;
 using HelpDesk.Data.Entities;
 using HelpDesk.Data.Repositories.Interfaces;
+using static HelpDesk.Common.Constants.Constants;
 using static HelpDesk.Common.Exceptions.Exceptions;
 
 namespace HelpDesk.Business.Services.Implementation
@@ -21,7 +22,6 @@ namespace HelpDesk.Business.Services.Implementation
             _mapper = mapper;
 
         }
-
         public async Task<PaginationResponse<PriorityResponse>> GetAllPriority(PaginationRequest request)
         {
             string searchKey = request.Search?.Trim().ToLower();
@@ -61,6 +61,38 @@ namespace HelpDesk.Business.Services.Implementation
             await _unitOfWork.SaveAsync();
         }
 
+        public async Task Edit(int priorityId, CreatePriorityRequest request)
+        {
+            Priority? priority = await GetPriorityById(priorityId);
+            if (priority.IsSystemGenerated)
+            {
+                throw new BadRequestException(Message.Error.ItIsSystemGenerated);
+            }
+            await IsPriorityNameExist(request.PriorityName, priorityId);
+            priority.PriorityName = request.PriorityName;
+            priority.UpdatedDate = DateTime.UtcNow;
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task Delete(int priorityId)
+        {
+            Priority? priority = await GetPriorityById(priorityId);
+            if (priority.IsSystemGenerated)
+                throw new BadRequestException(Message.Error.ItIsSystemGenerated);
+
+            Status? openStatus = await _unitOfWork.Status.GetFirstOrDefault(s => s.StatusName == TicketStatus.Open);
+
+            Status? inProgressStatus = await _unitOfWork.Status.GetFirstOrDefault(s => s.StatusName == TicketStatus.InProgress);
+
+            IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t => t.PriorityId == priorityId && (t.Status.StatusId == openStatus.StatusId || t.Status.StatusId == inProgressStatus.StatusId));
+
+            if (hasActiveTickets.Count() > 0)
+                throw new BadRequestException(Message.Error.CanNotDeleteTicketPriority);
+
+            priority.IsDelete = true;
+            await _unitOfWork.SaveAsync();
+        }
+
         private async Task<Priority?> IsPriorityNameExist(string priorityName, int? currentPriorityId = null)
         {
             Priority? priority = await _unitOfWork.Priorities.GetFirstOrDefault(c =>
@@ -77,5 +109,14 @@ namespace HelpDesk.Business.Services.Implementation
             return priority;
         }
 
+        private async Task<Priority> GetPriorityById(int priorityId)
+        {
+            Priority? category = await _unitOfWork.Priorities.GetFirstOrDefault(c => c.PriorityId == priorityId && !c.IsDelete);
+            if (category == null)
+            {
+                throw new NotFoundException(Message.Error.NotFound("Priority"));
+            }
+            return category;
+        }
     }
 }

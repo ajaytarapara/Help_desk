@@ -77,6 +77,15 @@ namespace HelpDesk.Business.Mapping
             .ForMember(dest => dest.PriorityName, opt => opt.MapFrom(src => src.PriorityName))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PriorityId));
 
+            CreateMap<Priority, CreatePriorityRequest>()
+            .ForMember(dest => dest.PriorityName, opt => opt.MapFrom(src => src.PriorityName)).ReverseMap();
+
+            CreateMap<Status, StatusResponse>()
+            .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.StatusName))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.StatusId));
+
+            CreateMap<Status, CreateStatusRequest>()
+           .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.StatusName)).ReverseMap();
 
         }
     }

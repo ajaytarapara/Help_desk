@@ -7,7 +7,6 @@ using HelpDesk.Common.Models.Request;
 using HelpDesk.Common.Models.Response;
 using HelpDesk.Data.Entities;
 using HelpDesk.Data.Repositories.Interfaces;
-using static HelpDesk.Common.Constants.Constants;
 using static HelpDesk.Common.Exceptions.Exceptions;
 
 namespace HelpDesk.Business.Services.Implementation

@@ -1,27 +1,23 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { getToken, getUserRole, isTokenExpired } from "../../utils/authUtils";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/store";
 import { Routes } from "../../utils/constant";
 import Header from "../../Components/common/Header";
+
 interface ProtectedRouteProps {
   allowedRoles: string[];
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
-  const token = getToken();
-  const role = getUserRole();
+  const { user } = useSelector((state: RootState) => state.auth);
 
-  // 🔒 If no token or token expired → redirect to login
-  if (!token || isTokenExpired()) {
-    localStorage.removeItem("token");
+  if (!user) {
+    return <Navigate to={Routes.LOGIN} replace />;
+  }
+  if (!allowedRoles.includes(user.role)) {
     return <Navigate to={Routes.LOGIN} replace />;
   }
 
-  // 🚫 If user role is not allowed → redirect to login or a “not authorized” page
-  if (!role || !allowedRoles.includes(role)) {
-    return <Navigate to={Routes.LOGIN} replace />;
-  }
-
-  // Otherwise, allow access
   return (
     <>
       <Header />

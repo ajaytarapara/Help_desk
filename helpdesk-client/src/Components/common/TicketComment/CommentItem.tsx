@@ -16,14 +16,13 @@ import {
   Edit,
   Delete,
 } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
 import CommentForm from "./CommentForm";
 import ReplyContext from "./ReplyContext";
 import { CommentCard, StyledButton } from "./styles";
 import { Comments } from "../../../features/comments/types";
-import { AppDispatch } from "../../../core/store";
-import { getUserId } from "../../../utils/authUtils";
+import { AppDispatch, RootState } from "../../../core/store";
 import {
   deleteCommentThunk,
   editCommentThunk,
@@ -49,8 +48,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const currentUserId = Number(getUserId() ?? 0);
-
+  const { user } = useSelector((state: RootState) => state.auth);
   const parentComment = comment.parentCommentId
     ? commentMap.get(comment.parentCommentId)
     : null;
@@ -108,35 +106,37 @@ const CommentItem: React.FC<CommentItemProps> = ({
           Reply
         </Button>
 
-        {currentUserId === comment.createdByUserId && !editMode && (
-          <>
-            <IconButton
-              onClick={(e) => setAnchorEl(e.currentTarget)}
-              size="small">
-              <MoreVert />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)}>
-              <MenuItem
-                onClick={() => {
-                  setEditMode(true);
-                  setAnchorEl(null);
-                }}>
-                <Edit fontSize="small" sx={{ marginRight: "10px" }} /> Edit
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setDeleteDialogOpen(true);
-                  setAnchorEl(null);
-                }}
-                sx={{ color: "error.main" }}>
-                <Delete fontSize="small" sx={{ marginRight: "10px" }} /> Delete
-              </MenuItem>
-            </Menu>
-          </>
-        )}
+        {Number(user?.userId ? user.userId : 0) === comment.createdByUserId &&
+          !editMode && (
+            <>
+              <IconButton
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+                size="small">
+                <MoreVert />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}>
+                <MenuItem
+                  onClick={() => {
+                    setEditMode(true);
+                    setAnchorEl(null);
+                  }}>
+                  <Edit fontSize="small" sx={{ marginRight: "10px" }} /> Edit
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setDeleteDialogOpen(true);
+                    setAnchorEl(null);
+                  }}
+                  sx={{ color: "error.main" }}>
+                  <Delete fontSize="small" sx={{ marginRight: "10px" }} />{" "}
+                  Delete
+                </MenuItem>
+              </Menu>
+            </>
+          )}
       </Box>
 
       {parentComment && <ReplyContext parentComment={parentComment} />}

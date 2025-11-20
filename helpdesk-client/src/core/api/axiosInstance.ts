@@ -15,6 +15,7 @@ export const injectStore = (store: AppStore) => {
 
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL || "http://localhost:5214/api",
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -24,9 +25,6 @@ const axiosClient = axios.create({
 // Request Interceptor — attach token & show loader
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-
     storeRef?.dispatch(showLoader());
     return config;
   },

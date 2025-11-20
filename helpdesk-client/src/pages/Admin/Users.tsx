@@ -6,7 +6,6 @@ import {
   Add,
   Delete,
   Mode,
-  Search,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,8 +15,8 @@ import {
   NoDataFound,
 } from "../../Components/common";
 
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../core/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../core/store";
 
 import {
   getAllUsersThunk,
@@ -48,13 +47,12 @@ import {
   UserPaginationRequest,
 } from "../../features/user/type";
 import { PaginationResponse, ApiResponse } from "../../features/auth/types";
-import { getUserId } from "../../utils/authUtils";
 import useDebounce from "../../utils/hooks";
 
 const Users = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const loggedInUserId = getUserId();
+  const { user } = useSelector((state: RootState) => state.auth);
   // Data states
   const [userList, setUserList] = useState<UserListResponse[]>([]);
   const [searchValue, setSearchValue] = useState("");
@@ -253,7 +251,7 @@ const Users = () => {
                 <IconButton
                   color="primary"
                   onClick={() => navigate(`/Manage/Edit/Users/${row.userId}`)}
-                  disabled={loggedInUserId === row.userId.toString()}>
+                  disabled={(user?.userId ?? 0) === row.userId.toString()}>
                   <Mode />
                 </IconButton>
                 <IconButton
@@ -262,7 +260,7 @@ const Users = () => {
                     setDialogOpen(true);
                     setDeletedId(row.userId);
                   }}
-                  disabled={loggedInUserId === row.userId.toString()}>
+                  disabled={(user?.userId ?? 0) === row.userId.toString()}>
                   <Delete />
                 </IconButton>
               </Box>

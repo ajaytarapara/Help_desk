@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<Priority> Priorities { get; set; }
     public DbSet<Status> Statuses { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

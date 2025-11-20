@@ -1,5 +1,11 @@
 import axiosClient from "../../core/api/axiosInstance";
-import { ApiResponse, LoginRequest, RegisterRequest, User } from "./types";
+import {
+  ApiResponse,
+  LoginRequest,
+  RegisterRequest,
+  User,
+  UserInfo,
+} from "./types";
 
 export const login = async (
   data: LoginRequest
@@ -17,6 +23,24 @@ export const register = async (
   const response = await axiosClient.post<ApiResponse<User>>(
     `/auth/register`,
     data
+  );
+  return response.data;
+};
+
+export const getUser = async (): Promise<ApiResponse<UserInfo>> => {
+  const response = await axiosClient.get<ApiResponse<UserInfo>>("/auth/me", {
+    headers: {
+      showToast: false,
+    },
+  });
+  return response.data;
+};
+
+export const logoutApi = async (): Promise<ApiResponse<any>> => {
+  const response = await axiosClient.post(
+    "/auth/logout",
+    {},
+    { withCredentials: true }
   );
   return response.data;
 };

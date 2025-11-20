@@ -8,16 +8,14 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../core/store";
-import { ApiResponse } from "../features/auth/types";
-import { loginUser } from "../features/auth/authThunk";
+import { ApiResponse, UserInfo } from "../features/auth/types";
+import { fetchUser, loginUser } from "../features/auth/authThunk";
 import { Roles, Routes } from "../utils/constant";
 import {
-  getAllAgentThunk,
   getAllCategoryThunk,
   getAllPriorityThunk,
   getAllStatusThunk,
 } from "../features/dropDown/dropDownThunk";
-import { getUserRole } from "../utils/authUtils";
 import { loginValidationSchema } from "../utils/validationSchemaUtils";
 
 import {
@@ -46,16 +44,20 @@ const Login = () => {
     validationSchema: loginValidationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       const result = await dispatch(loginUser(values));
-      const token = (result.payload as ApiResponse<string>)?.data;
-      if (token) {
-        localStorage.setItem("token", token);
-        navigate(Routes.USER_DASHBOARD);
-        getAllLookUpData();
-        if (getUserRole() !== Roles.USER) {
-          await dispatch(getAllAgentThunk());
-        }
+      if (!result.payload || !(result.payload as ApiResponse<any>).success) {
+        setSubmitting(false);
+        return;
+      }
+      const userResult = await dispatch(fetchUser());
+      const user = userResult.payload as ApiResponse<UserInfo>;
+      if (user?.data) {
+        if (user?.data.role === Roles.ADMIN) navigate(Routes.ADMIN_DASHBOARD);
+        else if (user.data.role === Roles.AGENT)
+          navigate(Routes.AGENT_DASHBOARD);
+        else navigate(Routes.USER_DASHBOARD);
       }
       setSubmitting(false);
+      getAllLookUpData();
     },
   });
 

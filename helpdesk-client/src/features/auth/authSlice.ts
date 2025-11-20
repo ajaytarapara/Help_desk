@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser } from "./authThunk";
+import { fetchUser, loginUser, logoutUser } from "./authThunk";
+import { UserInfo } from "./types";
 
 interface AuthState {
   token: string | null;
+  user: UserInfo | null;
 }
 
 const initialState: AuthState = {
   token: localStorage.getItem("token"),
+  user: null,
 };
 
 const authSlice = createSlice({
@@ -23,6 +26,12 @@ const authSlice = createSlice({
       if (token) {
         state.token = token;
       }
+    });
+    builder.addCase(fetchUser.fulfilled, (state, action) => {
+      state.user = action.payload.data;
+    });
+    builder.addCase(logoutUser.fulfilled, (state) => {
+      state.user = null;
     });
   },
 });

@@ -19,25 +19,24 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import { resetDropDown } from "../../features/dropDown/dropDownSice";
 import { Routes } from "../../utils/constant";
-import { AppDispatch } from "../../core/store";
-import { getUserName } from "../../utils/authUtils";
+import { AppDispatch, RootState } from "../../core/store";
+import { logoutUser } from "../../features/auth/authThunk";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const { user } = useSelector((state: RootState) => state.auth);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     dispatch(resetDropDown());
-    localStorage.removeItem("token");
     navigate(Routes.LOGIN);
   };
 
@@ -66,10 +65,10 @@ const Header: React.FC = () => {
                   height: 32,
                   fontSize: "1rem",
                 }}>
-                {getUserName()?.charAt(0).toUpperCase()}
+                {user?.fullName?.charAt(0).toUpperCase()}
               </Avatar>
               <BrandTitle variant="body1" fontWeight={600}>
-                {getUserName()}
+                {user?.fullName}
               </BrandTitle>
             </UserBox>
 
@@ -94,7 +93,7 @@ const Header: React.FC = () => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}>
               <MenuItem disabled>
-                <Typography fontWeight={600}>{getUserName()}</Typography>
+                <Typography fontWeight={600}>{user?.fullName}</Typography>
               </MenuItem>
               <MenuItem
                 onClick={() => {

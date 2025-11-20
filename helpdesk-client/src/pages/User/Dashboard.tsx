@@ -18,7 +18,6 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { CustomButton, CustomCard } from "../../Components/common";
-import { getUserName } from "../../utils/authUtils";
 import {
   DefaultPageNumber,
   DefaultPageSize,
@@ -29,8 +28,8 @@ import {
   TicketAttr,
   TicketPaginationRequest,
 } from "../../features/ticket/types";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../core/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../core/store";
 import { getAllTicketThunk } from "../../features/ticket/ticketThunk";
 import { ApiResponse, PaginationResponse } from "../../features/auth/types";
 import { useEffect, useState } from "react";
@@ -43,6 +42,7 @@ const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [ticketList, setTicketList] = useState<TicketAttr[]>([]);
   const [ticketSummary, setTicketSummary] = useState<TicketUserSummary>();
+  const { user } = useSelector((state: RootState) => state.auth);
   const stats = [
     {
       icon: <ConfirmationNumber sx={{ fontSize: 40 }} />,
@@ -105,7 +105,7 @@ const Dashboard = () => {
         <Header>
           <Box>
             <WelcomeTitle variant="h4">
-              Welcome back, {getUserName()} !
+              Welcome back, {user?.fullName} !
             </WelcomeTitle>
             <WelcomeSubtitle variant="body1">
               Here's what's happening with your tickets today.

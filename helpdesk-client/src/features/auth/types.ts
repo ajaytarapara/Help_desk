@@ -55,3 +55,10 @@ export interface PaginationResponse<T> {
   };
   errors?: string[];
 }
+
+export interface UserInfo {
+  userId: string;
+  fullName: string;
+  role: string;
+  email: string;
+}

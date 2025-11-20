@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Box, Container, Typography, IconButton, Chip } from "@mui/material";
-import {
-  ArrowBack,
-  FilterList,
-  VisibilityOutlined,
-  Search,
-} from "@mui/icons-material";
+import { ArrowBack, FilterList, VisibilityOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
@@ -23,7 +18,6 @@ import {
   TicketPaginationRequest,
 } from "../../features/ticket/types";
 import { DefaultPageNumber, DefaultPageSize } from "../../utils/constant";
-import { getUserId } from "../../utils/authUtils";
 import { ChipMenu, DataTable, NoDataFound } from "../../Components/common";
 import { TicketFilterDrawer } from "../../Components/common/TicketFilterDrawer";
 import {
@@ -38,8 +32,7 @@ import useDebounce from "../../utils/hooks";
 const AllTickets = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const loggedInUserId = getUserId() || "";
-
+  const { user } = useSelector((state: RootState) => state.auth);
   const { priorityList, statusList, agentList } = useSelector(
     (state: RootState) => state.dropDown
   );
@@ -202,7 +195,7 @@ const AllTickets = () => {
                       label={row.status.statusName}
                       color={getStatusColor(row.status.statusName)}
                       disableMenu={
-                        row.assignedTo.id !== +loggedInUserId ||
+                        row.assignedTo.id !== Number(user?.userId ?? 0) ||
                         row.status.statusName.toLowerCase() === "closed"
                       }
                       disabledLabels={["Open"]}

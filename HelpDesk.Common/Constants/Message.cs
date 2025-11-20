@@ -77,6 +77,7 @@ namespace HelpDesk.Common.Constants
             public static readonly Func<string, string> UpdateSuccess = (entityName) => $"{entityName} updated successfully.";
             public static readonly Func<string, string> DeleteSuccess = (entityName) => $"{entityName} deleted successfully.";
             public const string CommentAdded = "Comment added successfully.";
+            public const string LogOutSuccess = "Logout Successfully.";
         }
 
         public static class Validation

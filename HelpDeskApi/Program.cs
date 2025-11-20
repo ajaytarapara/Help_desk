@@ -32,12 +32,12 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // --- CORS Policy (Allow All) ---
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowFrontend", builder =>
     {
-        policy
-            .AllowAnyOrigin()     //  Allow all origins
-            .AllowAnyHeader()     //  Allow all headers
-            .AllowAnyMethod();    //  Allow all HTTP methods (GET, POST, etc.)
+        builder.WithOrigins("http://localhost:3000")
+               .AllowCredentials()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
     });
 });
 
@@ -60,7 +60,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // ✅ Use CORS before authentication and endpoints
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 
 // Add global exception handler
 app.UseMiddleware<ExceptionMiddleware>();

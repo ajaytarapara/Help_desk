@@ -34,6 +34,7 @@ namespace HelpDesk.Business.Services.Implementation
                 throw new BadRequestException(Message.Error.InvalidCred);
 
             string token = JwtTokenGenerator.GenerateToken(user, _configuration);
+            
             return token;
         }
 

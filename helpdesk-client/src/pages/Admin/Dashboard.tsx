@@ -5,8 +5,10 @@ import {
   HourglassEmpty,
   Group,
   Settings,
-  Assessment,
   SupervisorAccount,
+  Category,
+  TrackChanges,
+  Flag,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { CustomButton, CustomCard } from "../../Components/common";
@@ -197,7 +199,7 @@ const AdminDashboard = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <ActionCard>
-                <Assessment sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }} />
+                <Category sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }} />
                 <Typography variant="h6" fontWeight={600}>
                   Categories
                 </Typography>
@@ -215,9 +217,7 @@ const AdminDashboard = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <ActionCard>
-                <ConfirmationNumber
-                  sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }}
-                />
+                <Flag sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }} />
                 <Typography variant="h6" fontWeight={600}>
                   Priority
                 </Typography>
@@ -235,7 +235,7 @@ const AdminDashboard = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <ActionCard>
-                <Settings sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }} />
+                <TrackChanges sx={{ fontSize: 32, color: "#0ea5e9", mb: 1 }} />
                 <Typography variant="h6" fontWeight={600}>
                   Status
                 </Typography>

@@ -19,10 +19,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   }
 
   return (
-    <>
-      <Header />
+    <Header>
       <Outlet />
-    </>
+    </Header>
   );
 };
 

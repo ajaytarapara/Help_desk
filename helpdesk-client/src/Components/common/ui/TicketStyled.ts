@@ -12,7 +12,7 @@ import CustomCard from "../CustomCard";
 /* ----------------------------- COMMON LAYOUT ----------------------------- */
 
 export const TicketRoot = styled(Box)(() => ({
-  minHeight: "100vh",
+  minHeight: "calc(100vh - 65px)",
   backgroundColor: "#f8fafc",
   paddingTop: 32,
   paddingBottom: 64,

@@ -94,11 +94,6 @@ export const protectedRoutes = [
     roles: [Roles.ADMIN],
   },
   {
-    path: Routes.ADMIN_USER_EDIT,
-    element: <CreateUser />,
-    roles: [Roles.ADMIN],
-  },
-  {
     path: Routes.ADMIN_CATEGORY_LIST,
     element: <Category />,
     roles: [Roles.ADMIN],

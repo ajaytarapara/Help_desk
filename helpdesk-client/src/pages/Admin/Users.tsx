@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Container, Typography, Chip, IconButton } from "@mui/material";
-import {
-  ArrowBack,
-  FilterList,
-  Add,
-  Delete,
-  Mode,
-} from "@mui/icons-material";
+import { ArrowBack, FilterList, Add, Delete, Mode } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import {
   CustomButton,
@@ -250,7 +244,7 @@ const Users = () => {
               <Box>
                 <IconButton
                   color="primary"
-                  onClick={() => navigate(`/Manage/Edit/Users/${row.userId}`)}
+                  onClick={() => navigate(`/Manage/Users/Edit/${row.userId}`)}
                   disabled={(user?.userId ?? 0) === row.userId.toString()}>
                   <Mode />
                 </IconButton>

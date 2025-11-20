@@ -3,6 +3,7 @@ using System.Security.Claims;
 using HelpDesk.Business.Services.Interfaces;
 using HelpDesk.Common.Constants;
 using HelpDesk.Common.Models.Request;
+using HelpDesk.Common.Models.Response;
 using HelpDesk.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,15 +23,22 @@ namespace HelpDeskApi.controller
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            string response = await _authService.LoginAsync(request);
-            var cookieOptions = new CookieOptions
+            AuthTokens tokens = await _authService.LoginAsync(request);
+            Response.Cookies.Append("access_token", tokens.AccessToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddMinutes(60)
-            };
-            Response.Cookies.Append("auth_token", response, cookieOptions);
+                Expires = DateTime.UtcNow.AddMinutes(15)
+            });
+
+            Response.Cookies.Append("refresh_token", tokens.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
             return Success("", Message.Success.Login);
         }
 
@@ -41,18 +49,14 @@ namespace HelpDeskApi.controller
             return Success(response, Message.Success.Register);
         }
 
+        [Authorize]
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            Response.Cookies.Append("auth_token", "", new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddDays(-1),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None
-            });
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
 
-            return Success("", Message.Success.LogOutSuccess);
+            return Success("", "Logged out successfully");
         }
 
         [Authorize]
@@ -69,6 +73,27 @@ namespace HelpDeskApi.controller
 
             return Success(user);
         }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            string? refreshToken = Request.Cookies["refresh_token"];
+
+            if (refreshToken == null)
+                return Unauthorized("Refresh token missing");
+
+            var newTokens = await _authService.RefreshAsync(refreshToken);
+
+            Response.Cookies.Append("access_token", newTokens.AccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddMinutes(15)
+            });
+            return Success("", "Token refreshed");
+        }
+
 
     }
 }

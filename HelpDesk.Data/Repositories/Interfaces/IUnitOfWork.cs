@@ -10,5 +10,6 @@ namespace HelpDesk.Data.Repositories.Interfaces
         IStatusRepository Status { get; }
         ICommentRepository Comment { get; }
         IRoleRepository Roles { get; }
+        IRefreshTokenRepository RefreshToken { get; }
     }
 }

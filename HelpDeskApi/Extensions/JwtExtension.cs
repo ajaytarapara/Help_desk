@@ -22,9 +22,9 @@ namespace HelpDeskApi.Extensions
                 {
                     OnMessageReceived = context =>
                     {
-                        if (context.Request.Cookies.ContainsKey("auth_token"))
+                        if (context.Request.Cookies.ContainsKey("access_token"))
                         {
-                            context.Token = context.Request.Cookies["auth_token"];
+                            context.Token = context.Request.Cookies["access_token"];
                         }
                         return Task.CompletedTask;
                     }

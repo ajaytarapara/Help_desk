@@ -12,7 +12,7 @@ namespace HelpDesk.Data.Repositories.Implementations
         private IStatusRepository? _statusRepository;
         private ICommentRepository? _commentRepository;
         private IRoleRepository? _roleRepository;
-
+        private IRefreshTokenRepository? _refreshTokenRepository;
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
@@ -35,6 +35,8 @@ namespace HelpDesk.Data.Repositories.Implementations
         public ICommentRepository Comment => _commentRepository ??= new CommentRepository(_context);
 
         public IRoleRepository Roles => _roleRepository ??= new RoleRepository(_context);
+
+        public IRefreshTokenRepository RefreshToken => _refreshTokenRepository ??= new RefreshTokenRepository(_context);
     }
 
 }

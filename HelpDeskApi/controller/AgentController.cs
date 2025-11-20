@@ -38,6 +38,5 @@ namespace HelpDeskApi.controller
             FunAgentResolutionTimeResponse timeResponse = await _agentService.GetResolutionTimePerAgent();
             return Success(timeResponse);
         }
-
     }
 }

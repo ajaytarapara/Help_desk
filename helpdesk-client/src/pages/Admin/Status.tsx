@@ -151,7 +151,8 @@ const Status = () => {
               <Box>
                 <IconButton
                   color="primary"
-                  onClick={() => navigate(`/Manage/Status/Edit/${row.id}`)}>
+                  onClick={() => navigate(`/Manage/Status/Edit/${row.id}`)}
+                  disabled={row.isSystemGenerated}>
                   <Mode />
                 </IconButton>
 
@@ -160,7 +161,8 @@ const Status = () => {
                   onClick={() => {
                     setDialogOpen(true);
                     setDeletedId(row.id);
-                  }}>
+                  }}
+                  disabled={row.isSystemGenerated}>
                   <Delete />
                 </IconButton>
               </Box>

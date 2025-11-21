@@ -4,5 +4,6 @@ namespace HelpDesk.Common.Models.Response
     {
         public int Id { get; set; }
         public string PriorityName { get; set; } = string.Empty;
+        public bool? IsSystemGenerated { get; set; } = false;
     }
 }

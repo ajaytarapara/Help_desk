@@ -82,7 +82,7 @@ namespace HelpDesk.Business.Services.Implementation
             IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t => t.StatusId == status.StatusId && !t.IsDeleted);
 
             if (hasActiveTickets.Count() > 0)
-                throw new BadRequestException(Message.Error.CanNotDeleteTicketStatus);
+                throw new BadRequestException(Message.Error.CanNotDeleteTicketPresentStatus);
 
             status.IsDelete = true;
             await _unitOfWork.SaveAsync();

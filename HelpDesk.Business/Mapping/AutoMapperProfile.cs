@@ -75,7 +75,8 @@ namespace HelpDesk.Business.Mapping
 
             CreateMap<Priority, PriorityResponse>()
             .ForMember(dest => dest.PriorityName, opt => opt.MapFrom(src => src.PriorityName))
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PriorityId));
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PriorityId))
+            .ForMember(dest => dest.IsSystemGenerated, opt => opt.MapFrom(src => src.IsSystemGenerated));
 
             CreateMap<Priority, CreatePriorityRequest>()
             .ForMember(dest => dest.PriorityName, opt => opt.MapFrom(src => src.PriorityName)).ReverseMap();

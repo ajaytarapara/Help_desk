@@ -15,7 +15,7 @@ namespace HelpDeskApi.controller
             _agentService = agentService;
         }
 
-        [Authorize(Roles = "Agent")]
+        [Authorize(Roles = "Agent,Admin")]
         [HttpGet("ticket-status-summary")]
         public async Task<IActionResult> GetTicketCount()
         {

@@ -5,6 +5,6 @@ namespace HelpDesk.Common.Models.Response
         public int Open { get; set; }
         public int InProgress { get; set; }
         public int Closed { get; set; }
-
+        public int TotalTickets { get; set; }
     }
 }

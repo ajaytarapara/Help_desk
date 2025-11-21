@@ -24,12 +24,13 @@ namespace HelpDesk.Business.Services.Implementation
             var openCount = await GetTicketCountByStatusName(Constants.TicketStatus.Open);
             var inProgressCount = await GetTicketCountByStatusName(Constants.TicketStatus.InProgress);
             var closedCount = await GetTicketCountByStatusName(Constants.TicketStatus.Closed);
-
+            var totalTickets = await GetTotalTicket();
             var ticketSummaryResponse = new AgentTicketSummaryResponse
             {
                 Open = openCount,
                 InProgress = inProgressCount,
-                Closed = closedCount
+                Closed = closedCount,
+                TotalTickets = totalTickets
             };
             return ticketSummaryResponse;
         }
@@ -51,6 +52,11 @@ namespace HelpDesk.Business.Services.Implementation
         private async Task<int> GetTicketCountByStatusName(string statusName)
         {
             IEnumerable<Ticket> tickets = await _unitOfWork.Tickets.GetAllAsync(t => t.Status.StatusName.ToLower() == statusName.ToLower() && !t.IsDeleted);
+            return tickets.Count();
+        }
+        private async Task<int> GetTotalTicket()
+        {
+            IEnumerable<Ticket> tickets = await _unitOfWork.Tickets.GetAllAsync(t => !t.IsDeleted);
             return tickets.Count();
         }
 

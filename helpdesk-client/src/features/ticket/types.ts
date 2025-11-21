@@ -84,6 +84,7 @@ export interface TicketSummaryResponse {
   open: number;
   inProgress: number;
   closed: number;
+  totalTickets: number;
 }
 
 export interface CommentCreateRequest {

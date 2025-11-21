@@ -43,6 +43,8 @@ namespace HelpDesk.Common.Constants
 
             public const string TicketInProgressToClosedOnly = "A ticket can only move from In Progress to Closed..";
 
+            public const string TicketWillAbleToGoNextOrClosed = "Ticket Will Able To Go Next Or Closed";
+
             public const string ClosedTicketsCannotChangeStatus = "This ticket is already closed, so its status cannot be changed.";
 
             public const string InvalidStatusTransition = "The ticket cannot be moved to the selected status.";
@@ -62,6 +64,9 @@ namespace HelpDesk.Common.Constants
             public const string CanNotDeleteTicketPriority = "Cannot delete this priority. Tickets are still open or in progress.";
             public const string StatusAlreadyExist = "The entered status already exists in the system. Provide a unique status name.";
             public const string CanNotDeleteTicketStatus = "Cannot delete this status. Tickets are still open or in progress.";
+            public const string TicketCannotGoBackToOpen = "Ticket cannot be moved back to Open once it is In Progress or beyond.";
+            public const string TicketInClosedAssignmentNotPossible = "Ticket In Closed Assignment NotPossible";
+            public const string CanNotDeleteTicketPresentStatus = "Cannot delete this status. Tickets are still in this status.";
 
         }
 

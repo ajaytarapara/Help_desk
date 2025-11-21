@@ -317,9 +317,8 @@ namespace HelpDesk.Business.Services.Implementation
         {
             var status = ticket.Status.StatusName.ToLower();
 
-            if (status != Constants.TicketStatus.Open.ToLower() &&
-                status != Constants.TicketStatus.InProgress.ToLower())
-                throw new BadRequestException(Message.Error.TicketMustBeOpenOrInProgressToAssign);
+            if (status == Constants.TicketStatus.Closed.ToLower())
+                throw new BadRequestException(Message.Error.TicketInClosedAssignmentNotPossible);
         }
 
         private void ValidateStatusChangePermission(Ticket ticket, int currentUserId)
@@ -342,21 +341,29 @@ namespace HelpDesk.Business.Services.Implementation
             switch (currentStatus)
             {
                 case Constants.TicketStatus.Open:
+                    // Open → must go only to InProgress
                     if (newStatus.StatusName != Constants.TicketStatus.InProgress)
                         throw new BadRequestException(Message.Error.TicketOpenToInProgressOnly);
                     break;
 
                 case Constants.TicketStatus.InProgress:
-                    if (newStatus.StatusName != Constants.TicketStatus.Closed)
-                        throw new BadRequestException(Message.Error.TicketInProgressToClosedOnly);
+                    // InProgress → can go anywhere except Open
+                    if (newStatus.StatusName == Constants.TicketStatus.Open)
+                        throw new BadRequestException(Message.Error.TicketCannotGoBackToOpen);
                     break;
 
                 case Constants.TicketStatus.Closed:
+                    // Closed → cannot change status at all
                     throw new BadRequestException(Message.Error.ClosedTicketsCannotChangeStatus);
 
                 default:
-                    throw new BadRequestException(Message.Error.InvalidStatusTransition);
+                    // Other states between InProgress and Closed
+                    // (e.g. “OnHold”, “Review”, etc.)
+                    if (newStatus.StatusName == Constants.TicketStatus.Open)
+                        throw new BadRequestException(Message.Error.TicketCannotGoBackToOpen);
+                    break;
             }
+
         }
 
         private async Task<int> GetStatusID(string statusName)

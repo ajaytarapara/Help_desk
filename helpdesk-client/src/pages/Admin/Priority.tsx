@@ -150,12 +150,14 @@ const Priority = () => {
               <Box>
                 <IconButton
                   color="primary"
-                  onClick={() => navigate(`/Manage/Priority/Edit/${row.id}`)}>
+                  onClick={() => navigate(`/Manage/Priority/Edit/${row.id}`)}
+                  disabled={row.isSystemGenerated}>
                   <Mode />
                 </IconButton>
 
                 <IconButton
                   color="error"
+                  disabled={row.isSystemGenerated}
                   onClick={() => {
                     setDialogOpen(true);
                     setDeletedId(row.id);

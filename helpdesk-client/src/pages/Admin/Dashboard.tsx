@@ -13,36 +13,50 @@ import {
 import { useNavigate } from "react-router-dom";
 import { CustomButton, CustomCard } from "../../Components/common";
 import { Routes } from "../../utils/constant";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../core/store/hooks";
+import { ticketSummary } from "../../features/ticket/ticketThunk";
+import { RootState } from "../../core/store";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
+  const { ticketStatusSummary } = useAppSelector(
+    (state: RootState) => state.ticket
+  );
+  const fetchTicketSummary = async () => {
+    await dispatch(ticketSummary());
+  };
+  useEffect(() => {
+    fetchTicketSummary();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const stats = [
     {
       icon: <ConfirmationNumber sx={{ fontSize: 40 }} />,
       title: "Total Tickets",
-      value: "248",
+      value: String(ticketStatusSummary?.totalTickets ?? ""),
       color: "#0ea5e9",
       bgColor: "#e0f2fe",
     },
     {
       icon: <HourglassEmpty sx={{ fontSize: 40 }} />,
       title: "Open Tickets",
-      value: "45",
+      value: String(ticketStatusSummary?.open ?? ""),
       color: "#f59e0b",
       bgColor: "#fef3c7",
     },
     {
       icon: <Group sx={{ fontSize: 40 }} />,
-      title: "Active Agents",
-      value: "12",
+      title: "In progress",
+      value: String(ticketStatusSummary?.inProgress ?? ""),
       color: "#8b5cf6",
       bgColor: "#ede9fe",
     },
     {
       icon: <CheckCircle sx={{ fontSize: 40 }} />,
-      title: "Resolved Today",
-      value: "38",
+      title: "Resolved",
+      value: String(ticketStatusSummary?.closed ?? ""),
       color: "#10b981",
       bgColor: "#d1fae5",
     },

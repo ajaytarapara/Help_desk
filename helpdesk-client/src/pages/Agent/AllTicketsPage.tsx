@@ -28,6 +28,7 @@ import {
 } from "../../Components/common/ui/TicketStyled";
 import { FilterCountBadge } from "../../Components/common/ui/CommonStyled";
 import useDebounce from "../../utils/hooks";
+import { getAllAgentThunk } from "../../features/dropDown/dropDownThunk";
 
 const AllTickets = () => {
   const navigate = useNavigate();
@@ -87,8 +88,12 @@ const AllTickets = () => {
     }
   };
 
+  const getAllAgent = async () => {
+    await dispatch(getAllAgentThunk());
+  };
   useEffect(() => {
     getMyTicketList();
+    getAllAgent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterValues, page, sortKey, sortOrder, rowsPerPage, debouncedValue]);
 

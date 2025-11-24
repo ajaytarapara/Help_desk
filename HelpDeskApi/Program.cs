@@ -1,4 +1,5 @@
 // Create a new WebApplication builder instance
+using HelpDesk.Business.Hubs;
 using HelpDesk.Business.Mapping;
 using HelpDesk.Data;
 using HelpDeskApi.Extensions;
@@ -41,6 +42,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddSignalR();
 // ----------------------------------------------
 // Build the application
 // ----------------------------------------------
@@ -66,7 +68,7 @@ app.UseCors("AllowFrontend");
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapHub<CommentHub>("/hubs/comments");
 // Map controller routes (enables API endpoints from controllers)
 app.MapControllers();
 

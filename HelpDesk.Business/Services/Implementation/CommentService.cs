@@ -1,10 +1,12 @@
 using AutoMapper;
+using HelpDesk.Business.Hubs;
 using HelpDesk.Business.Services.Interfaces;
 using HelpDesk.Common.Constants;
 using HelpDesk.Common.Models.Request;
 using HelpDesk.Common.Models.Response;
 using HelpDesk.Data.Entities;
 using HelpDesk.Data.Repositories.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 using static HelpDesk.Common.Exceptions.Exceptions;
 
 namespace HelpDesk.Business.Services.Implementation
@@ -14,12 +16,13 @@ namespace HelpDesk.Business.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
-
-        public CommentService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUserService)
+        private readonly IHubContext<CommentHub> _hubContext;
+        public CommentService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUserService, IHubContext<CommentHub> hubContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _currentUserService = currentUserService;
+            _hubContext = hubContext;
         }
 
         public async Task<string> CreateCommentAsync(CommentCreateRequest dto)
@@ -37,6 +40,15 @@ namespace HelpDesk.Business.Services.Implementation
 
             await _unitOfWork.Comment.AddAsync(entity);
             await _unitOfWork.SaveAsync();
+            Comment? createdComment = await _unitOfWork.Comment.GetFirstOrDefault(
+                       x => x.CommentId == entity.CommentId,
+                       x => x.User
+                   );
+
+            CommentResponse commentResponse = _mapper.Map<CommentResponse>(createdComment);
+
+            await _hubContext.Clients.Group($"ticket-{dto.TicketId}")
+                .SendAsync("CommentCreated", commentResponse);
 
             return Message.Success.CreatedSuccess("Comment");
         }
@@ -102,6 +114,11 @@ namespace HelpDesk.Business.Services.Implementation
 
             _unitOfWork.Comment.Update(comment);
             await _unitOfWork.SaveAsync();
+            Comment? updated = await _unitOfWork.Comment.GetFirstOrDefault(x => x.CommentId == commentId, x => x.User);
+            CommentResponse commentResponse = _mapper.Map<CommentResponse>(updated);
+
+            await _hubContext.Clients.Group($"ticket-{comment.TicketId}")
+                .SendAsync("CommentEdited", commentResponse);
         }
 
         public async Task SoftDeleteCommentAsync(int commentId)
@@ -128,6 +145,9 @@ namespace HelpDesk.Business.Services.Implementation
 
             _unitOfWork.Comment.UpdateRange(commentsToDelete);
             await _unitOfWork.SaveAsync();
+            List<int> deletedIds = commentsToDelete.Select(c => c.CommentId).ToList();
+            await _hubContext.Clients.Group($"ticket-{targetComment.TicketId}")
+                .SendAsync("CommentDeleted", new { TicketId = targetComment.TicketId, DeletedIds = deletedIds });
         }
 
         private List<Comment> GetCommentHierarchy(List<Comment> allComments, int commentId)

@@ -1,75 +1,42 @@
-import { Box, Button, Paper, styled } from "@mui/material";
+import { styled, Button, Card, Box } from "@mui/material";
 
-export const CommentCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2.5),
-  borderRadius: "16px",
-  backgroundColor: "#fff",
-  marginBottom: theme.spacing(2),
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-  transition: "all 0.3s ease",
-  position: "relative",
-}));
-
-export const EmptyState = styled(Box)({
-  textAlign: "center",
-  padding: "40px",
-  backgroundColor: "#f0f9ff",
-  borderRadius: "12px",
-  border: "1px dashed #bae6fd",
-});
-
-export const ReplyContextBox = styled(Box)(({ theme }) => ({
-  borderLeft: `4px solid #db2777`,
-  paddingLeft: theme.spacing(2),
-  paddingTop: theme.spacing(0.5),
-  paddingBottom: theme.spacing(0.5),
-  marginBottom: theme.spacing(1),
-  backgroundColor: "#fef0f4",
-  borderRadius: "0 8px 8px 0",
-  maxHeight: "70px",
-  overflow: "hidden",
-  cursor: "pointer",
-  transition: "background-color 0.2s",
-  "&:hover": {
-    backgroundColor: "#fce7f4",
-  },
+export const EmptyState = styled(Box)(() => ({
+  padding: 40,
+  borderRadius: 12,
+  border: "1px dashed #e2e8f0",
   display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(1),
+  justifyContent: "center",
 }));
 
-export const StyledButton = styled(Button)(({ theme }) => ({
+export const CommentCard = styled(Card)(() => ({
+  padding: 16,
+  borderRadius: 12,
+  boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+  marginBottom: 8,
+}));
+
+export const StyledButton = styled(Button)(() => ({
+  borderRadius: 12,
+  padding: "8px 14px",
   textTransform: "none",
+}));
+
+export const ShowMoreButton = styled(Button)(() => ({
+  textTransform: "none",
+  color: "#7e22ce",
+  borderRadius: 8,
+  padding: "6px 16px",
   fontWeight: 600,
-  borderRadius: "10px",
-  padding: "6px 18px",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-
-  "&.MuiButton-containedPrimary": {
-    backgroundColor: "#f472b6",
-    "&:hover": {
-      backgroundColor: "#ec4899",
-      boxShadow: "0 4px 10px rgba(236, 72, 153, 0.35)",
-    },
-    "&.Mui-disabled": {
-      backgroundColor: "#e5e7eb",
-      color: "#9ca3af",
-      boxShadow: "none",
-    },
+  "&:hover": {
+    backgroundColor: "rgba(126,34,206,0.08)",
   },
+}));
 
-  "&.MuiButton-outlinedSecondary": {
-    borderColor: "#94a3b8",
-    color: "#475569",
-    "&:hover": {
-      borderColor: "#f472b6",
-      color: "#f472b6",
-      backgroundColor: "rgba(254, 240, 243, 0.6)",
-    },
-    "&.Mui-disabled": {
-      borderColor: "#e5e7eb",
-      color: "#9ca3af",
-      backgroundColor: "transparent",
-    },
-  },
+export const ReplyContextBox = styled(Box)(() => ({
+  marginTop: 12,
+  marginBottom: 6,
+  display: "flex",
+  gap: 8,
+  alignItems: "flex-start",
+  cursor: "pointer",
 }));

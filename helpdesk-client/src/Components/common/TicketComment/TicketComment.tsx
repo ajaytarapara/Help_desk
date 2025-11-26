@@ -3,7 +3,7 @@ import { Box, Paper, styled, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 
 import { flattenComments } from "./utils";
-import { EmptyState } from "./styles";
+import { EmptyState, ShowMoreButton } from "./styles";
 import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem";
 
@@ -18,20 +18,17 @@ import {
 } from "../../../features/comments/commentThunk";
 import { CommentSignalRService } from "../../../services/commentSignalRService";
 
+const COMMENTS_PAGE = 5;
+
 const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [comments, setComments] = useState<Comments[]>([]);
+  const [visibleComments, setVisibleComments] = useState(COMMENTS_PAGE);
 
-  // -------------------------------
-  // ⭐ Create SignalR Service
-  // -------------------------------
   const [signalRService] = useState(
     () => new CommentSignalRService("http://localhost:5214/hubs/comments")
   );
 
-  // -------------------------------
-  // Fetch comments initially
-  // -------------------------------
   const fetchComments = useCallback(async () => {
     try {
       const response = await dispatch(
@@ -47,12 +44,9 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
     if (ticketId) fetchComments();
   }, [fetchComments, ticketId]);
 
-  // -------------------------------
-  // Insert comment (new)
-  // -------------------------------
+  // SignalR insert/update/delete helpers (same logic as you had)
   const findAndInsert = useCallback(
     (rootComments: Comments[], commentToInsert: Comments) => {
-      // Root comment
       if (!commentToInsert.parentCommentId) {
         if (
           !rootComments.some((c) => c.commentId === commentToInsert.commentId)
@@ -61,7 +55,6 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
         }
         return rootComments;
       }
-
       const insertRec = (list: Comments[]): Comments[] => {
         return list.map((c) => {
           if (c.commentId === commentToInsert.parentCommentId) {
@@ -76,60 +69,39 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
           return { ...c, replies: insertRec(c.replies || []) };
         });
       };
-
       return insertRec(rootComments);
     },
     []
   );
 
-  // -------------------------------
-  // Update comment (edit)
-  // -------------------------------
   const findAndUpdate = useCallback((root: Comments[], updated: Comments) => {
-    const rec = (list: Comments[]): Comments[] => {
-      return list.map((c) => {
-        if (c.commentId === updated.commentId) {
-          return { ...c, ...updated };
-        }
+    const rec = (list: Comments[]): Comments[] =>
+      list.map((c) => {
+        if (c.commentId === updated.commentId) return { ...c, ...updated };
         return { ...c, replies: rec(c.replies || []) };
       });
-    };
     return rec(root);
   }, []);
 
-  // -------------------------------
-  // Delete comments
-  // -------------------------------
-  const removeByIds = useCallback(
-    (root: Comments[], idsToRemove: number[]): Comments[] => {
-      const rec = (list: Comments[]): Comments[] => {
-        return list
-          .filter((c) => !idsToRemove.includes(c.commentId))
-          .map((c) => ({ ...c, replies: rec(c.replies || []) }));
-      };
-      return rec(root);
-    },
-    []
-  );
+  const removeByIds = useCallback((root: Comments[], idsToRemove: number[]) => {
+    const rec = (list: Comments[]): Comments[] =>
+      list
+        .filter((c) => !idsToRemove.includes(c.commentId))
+        .map((c) => ({ ...c, replies: rec(c.replies || []) }));
+    return rec(root);
+  }, []);
 
-  // -------------------------------
-  // ⭐ SIGNALR - Connect + Handlers
-  // -------------------------------
   useEffect(() => {
     if (!ticketId) return;
 
-    // Connect to SignalR
     signalRService.connect(ticketId, {
-      onCreated: (comment: Comments) => {
-        setComments((prev) => findAndInsert(prev, comment));
-      },
-      onEdited: (comment: Comments) => {
-        setComments((prev) => findAndUpdate(prev, comment));
-      },
+      onCreated: (comment: Comments) =>
+        setComments((prev) => findAndInsert(prev, comment)),
+      onEdited: (comment: Comments) =>
+        setComments((prev) => findAndUpdate(prev, comment)),
       onDeleted: ({ ticketId: tId, deletedIds }) => {
-        if (tId === ticketId) {
+        if (tId === ticketId)
           setComments((prev) => removeByIds(prev, deletedIds));
-        }
       },
     });
 
@@ -138,9 +110,6 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
     };
   }, [ticketId, signalRService, findAndInsert, findAndUpdate, removeByIds]);
 
-  // -------------------------------
-  // Add a comment
-  // -------------------------------
   const handleAddComment = async (content: string, parentId: number | null) => {
     try {
       await dispatch(
@@ -150,7 +119,7 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
           parentCommentId: parentId,
         })
       ).unwrap();
-      // SignalR will handle UI update
+      // UI updates via SignalR or fetch
     } catch {}
   };
 
@@ -159,6 +128,15 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
     [comments]
   );
 
+  const topLevelComments = useMemo(() => {
+    const roots = comments.slice();
+    roots.sort(
+      (a, b) =>
+        new Date(b.createdDate).valueOf() - new Date(a.createdDate).valueOf()
+    );
+    return roots;
+  }, [comments]);
+
   return (
     <Box sx={{ margin: "0 auto" }}>
       <CommentFormPaper>
@@ -166,22 +144,36 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
         <CommentForm parentId={null} onAddComment={handleAddComment} />
       </CommentFormPaper>
 
-      {flatList.length === 0 ? (
+      {topLevelComments.length === 0 ? (
         <EmptyState>
           <Typography color="#64748b">
             No comments yet. Be the first!
           </Typography>
         </EmptyState>
       ) : (
-        flatList.map((comment) => (
-          <CommentItem
-            key={comment.commentId}
-            comment={comment}
-            onAddComment={handleAddComment}
-            commentMap={commentMap}
-            fetchComments={fetchComments}
-          />
-        ))
+        <>
+          {topLevelComments.slice(0, visibleComments).map((comment) => (
+            <CommentItem
+              key={comment.commentId}
+              comment={comment}
+              onAddComment={handleAddComment}
+              commentMap={commentMap}
+              fetchComments={fetchComments}
+            />
+          ))}
+
+          {visibleComments < topLevelComments.length && (
+            <Box display="flex" justifyContent="center" mt={2}>
+              <ShowMoreButton
+                onClick={() =>
+                  setVisibleComments((prev) => prev + COMMENTS_PAGE)
+                }>
+                Show more comments ({topLevelComments.length - visibleComments}{" "}
+                left)
+              </ShowMoreButton>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );
@@ -189,19 +181,17 @@ const TicketComments: React.FC<TicketCommentsProps> = ({ ticketId }) => {
 
 export default TicketComments;
 
-// -------------------------------
-// Styles
-// -------------------------------
-const CommentFormPaper = styled(Paper)({
+// styles for this file
+const CommentFormPaper = styled(Paper)(() => ({
   padding: 24,
   marginBottom: 24,
   borderRadius: "16px",
   background: "linear-gradient(180deg, #fef2f2 0%, #ffffff 100%)",
   border: "1px solid #fbcfe8",
   boxShadow: "0 4px 12px -2px rgba(190, 24, 93, 0.15)",
-});
+}));
 
-const CommentFormTitle = styled(Typography)({
+const CommentFormTitle = styled(Typography)(() => ({
   fontWeight: 700,
   color: "#9d174d",
-});
+}));

@@ -1,5 +1,4 @@
-import dayjs from "dayjs";
-import { Comments } from "../../../features/ticket/types";
+import { Comments } from "../../../features/comments/types";
 
 export const flattenComments = (
   comments: Comments[]
@@ -20,7 +19,8 @@ export const flattenComments = (
   traverse(comments);
 
   flatList.sort(
-    (a, b) => dayjs(b.createdDate).valueOf() - dayjs(a.createdDate).valueOf()
+    (a, b) =>
+      new Date(b.createdDate).valueOf() - new Date(a.createdDate).valueOf()
   );
 
   return { flatList, commentMap };

@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import { ChevronRight } from "@mui/icons-material";
 import { ReplyContextBox } from "./styles";
-import { Comments } from "../../../features/ticket/types";
+import { Comments } from "../../../features/comments/types";
 
 interface ReplyContextProps {
   parentComment: Comments;

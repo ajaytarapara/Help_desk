@@ -1,4 +1,4 @@
-import { styled, Button, Card, Box } from "@mui/material";
+import { styled, Button, Box, Paper } from "@mui/material";
 
 export const EmptyState = styled(Box)(() => ({
   padding: 40,
@@ -8,11 +8,23 @@ export const EmptyState = styled(Box)(() => ({
   justifyContent: "center",
 }));
 
-export const CommentCard = styled(Card)(() => ({
-  padding: 16,
-  borderRadius: 12,
-  boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
-  marginBottom: 8,
+export const CommentCard = styled(Paper)(() => ({
+  padding: "16px 20px",
+  borderRadius: "16px",
+  background: "linear-gradient(180deg, #fff0f7 0%, #ffffff 100%)",
+
+  border: "1px solid #f9a8d4",
+
+  boxShadow:
+    "0 2px 8px rgba(190, 24, 93, 0.12), 0 4px 16px rgba(190, 24, 93, 0.08)",
+
+  transition: "all 0.2s ease",
+
+  "&:hover": {
+    boxShadow:
+      "0 4px 12px rgba(190, 24, 93, 0.18), 0 8px 20px rgba(190, 24, 93, 0.12)",
+    borderColor: "#f472b6",
+  },
 }));
 
 export const StyledButton = styled(Button)(() => ({

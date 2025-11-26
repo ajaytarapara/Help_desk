@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import toast from "react-hot-toast";
 import { showLoader, hideLoader } from "../../features/ui/uiSlice";
 import { AppStore } from "../store";
+import { logout } from "../../features/auth/authSlice";
 
 // Extend axios config for _retry flag
 declare module "axios" {
@@ -118,7 +119,7 @@ axiosClient.interceptors.response.use(
       } catch (refreshError) {
         isRefreshing = false;
         processQueue(refreshError);
-
+        storeRef?.dispatch(logout());
         // logout user
         window.location.href = "/login";
 

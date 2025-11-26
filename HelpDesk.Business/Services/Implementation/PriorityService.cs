@@ -84,7 +84,7 @@ namespace HelpDesk.Business.Services.Implementation
 
             Status? inProgressStatus = await _unitOfWork.Status.GetFirstOrDefault(s => s.StatusName == TicketStatus.InProgress);
 
-            IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t => t.PriorityId == priorityId && (t.Status.StatusId == openStatus.StatusId || t.Status.StatusId == inProgressStatus.StatusId));
+            IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t => t.PriorityId == priorityId && (t.Status.StatusId == openStatus.StatusId || t.Status.StatusId == inProgressStatus.StatusId && !t.IsDeleted));
 
             if (hasActiveTickets.Count() > 0)
                 throw new BadRequestException(Message.Error.CanNotDeleteTicketPriority);

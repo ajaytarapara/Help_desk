@@ -83,7 +83,7 @@ namespace HelpDesk.Business.Services.Implementation
             IEnumerable<Ticket> hasActiveTickets = await _unitOfWork.Tickets.GetAllAsync(t =>
                 t.CategoryId == categoryId &&
                 (t.StatusId == openStatus.StatusId ||
-                 t.StatusId == inProgressStatus.StatusId)
+                 t.StatusId == inProgressStatus.StatusId) && !t.IsDeleted
             );
 
             if (hasActiveTickets.Count() > 0)
